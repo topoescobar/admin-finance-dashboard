@@ -11,6 +11,8 @@ import {
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
 
+//call these functions on the server side to protect the database, 
+//if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
 export async function fetchRevenue() {
   // Add noStore() here to prevent the response from being cached.
   // This is equivalent to in fetch(..., {cache: 'no-store'}).
@@ -92,10 +94,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6
-export async function fetchFilteredInvoices(
-  query: string,
-  currentPage: number,
-) {
+export async function fetchFilteredInvoices( query: string, currentPage: number,) {
   unstable_noStore()
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
   try {
