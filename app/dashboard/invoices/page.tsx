@@ -9,10 +9,9 @@ import { string } from 'zod'
 import { fetchInvoicesPages } from '@/app/lib/data'
 
 export default async function invoicesPage({ searchParams, }:
-  { searchParams?: { query?: string, page?: string } }) {
+  { searchParams?: { search?: string, page?: string } }) {
 
-  const query = searchParams?.query || ''
-  console.log(query)
+  const query = searchParams?.search || ''
   const currentPage = Number(searchParams?.page) || 1
   const totalPages = await fetchInvoicesPages(query)
 
@@ -25,7 +24,8 @@ export default async function invoicesPage({ searchParams, }:
         <Search placeholder="Search invoices..." />
         <CreateInvoice />
       </div>
-      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
+      {/* suspense solo se ejecuta una vez por defecto, se le agrega el key para forzar la renderización del fallback cada vez que hace el fetching */}
+      <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}> 
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
