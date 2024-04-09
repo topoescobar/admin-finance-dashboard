@@ -3,6 +3,8 @@ import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
+import { signIn } from '@/auth'
+import { AuthError } from 'next-auth'
 //todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
@@ -48,7 +50,6 @@ export async function updateInvoice(id: string, formData: FormData) {
     amount: formData.get('amount'),
     status: formData.get('status'),
   })
-
   const amountInCents = amount * 100
 
   try {
@@ -66,10 +67,29 @@ export async function updateInvoice(id: string, formData: FormData) {
 
 export async function deleteInvoice(id: string) {
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`    
+    await sql`DELETE FROM invoices WHERE id = ${id}`
   } catch (error) {
     console.log(error)
-    return { message: 'Database Error: Failed to Delete Invoice.' };
+    return { message: 'Database Error: Failed to Delete Invoice.' }
   }
   revalidatePath('/dashboard/invoices')
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData)
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.'
+        default:
+          return 'Something went wrong.'
+      }
+    }
+    throw error
+  }
 }
