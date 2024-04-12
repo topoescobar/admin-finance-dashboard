@@ -111,4 +111,6 @@ export async function register(formData: FormData) {
   } catch (error) {
     console.log(error)
   }
+  revalidatePath('/login')
+  redirect('/login')
 }

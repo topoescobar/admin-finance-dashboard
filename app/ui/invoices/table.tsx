@@ -11,7 +11,8 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
+        <div className="rounded-lg bg-gray-50 p-2 md:pt-0 dark:bg-slate-800 dark:text-white">
+          {/* MOBILE */}
           <div className="md:hidden">
             {invoices?.map((invoice) => (
               <div key={invoice.id} className="mb-2 w-full rounded-md bg-white p-4">
@@ -46,7 +47,8 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
               </div>
             ))}
           </div>
-          <table className="hidden min-w-full text-gray-900 md:table">
+
+          <table className="hidden min-w-full text-gray-900 md:table dark:text-white">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
@@ -69,7 +71,7 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white">
+            <tbody className="bg-white dark:bg-slate-800">
               {invoices?.map((invoice) => (
                 <tr
                   key={invoice.id}
