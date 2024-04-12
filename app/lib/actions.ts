@@ -5,6 +5,8 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
+import bcrypt from 'bcrypt'
+
 //todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
@@ -91,5 +93,22 @@ export async function authenticate(
       }
     }
     throw error
+  }
+}
+
+const RegisterSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  username: z.string().min(4),
+})
+export async function register(formData: FormData) {
+  const allData = Object.fromEntries(formData)
+  const { email, username, password } = RegisterSchema.parse(allData)
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  try {
+    await sql `INSERT INTO users (email, name, password) VALUES (${email}, ${username}, ${hashedPassword})`
+  } catch (error) {
+    console.log(error)
   }
 }
