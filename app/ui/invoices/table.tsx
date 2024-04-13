@@ -15,7 +15,7 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
           {/* MOBILE */}
           <div className="md:hidden">
             {invoices?.map((invoice) => (
-              <div key={invoice.id} className="mb-2 w-full rounded-md bg-white p-4">
+              <div key={invoice.id} className="mb-2 w-full rounded-md bg-white p-4 dark:bg-slate-900">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
@@ -48,20 +48,18 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
             ))}
           </div>
 
+          {/* DESKTOP */}
           <table className="hidden min-w-full text-gray-900 md:table dark:text-white">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Customer
+                  Cliente
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                  Cantidad
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Amount
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Date
+                  Fecha
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
                   Status
@@ -71,7 +69,7 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-slate-800">
+            <tbody className="bg-white dark:bg-slate-700">
               {invoices?.map((invoice) => (
                 <tr
                   key={invoice.id}
@@ -88,9 +86,6 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
                       />
                       <p>{invoice.name}</p>
                     </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(invoice.amount)}
