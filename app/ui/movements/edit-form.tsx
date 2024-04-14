@@ -1,6 +1,6 @@
 'use client'
 
-import { CustomerField, InvoiceForm, MovementEditForm, MovementForm } from '@/app/lib/definitions'
+import { CustomerField, InvoiceForm, MovementForm } from '@/app/lib/definitions'
 import {
   CalendarIcon,
   CheckIcon,
@@ -15,7 +15,7 @@ import { updateInvoice, updateMovement } from '@/app/lib/actions'
 import './styles/movements.css'
 
 export default function EditMovementForm({ invoice, customers, }:
-  { invoice: MovementEditForm, customers: CustomerField[] }) {
+  { invoice: MovementForm, customers: CustomerField[] }) {
 
   const updateWithId = updateMovement.bind(null, invoice.id) //using bind to ensure that the values passed to the Server Action are encoded.
 

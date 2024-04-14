@@ -104,14 +104,5 @@ export type MovementForm = {
   value: number
   tokens: number
   status: 'pending' | 'paid'
-  date: string
-}
-
-export type MovementEditForm = {
-  id: string
-  customer_id: string
-  value: number
-  tokens: number
-  status: 'pending' | 'paid'
   date: Date
 }
