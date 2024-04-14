@@ -1,17 +1,20 @@
-import { CustomerField } from '@/app/lib/definitions';
-import Link from 'next/link';
+import { CustomerField } from '@/app/lib/definitions'
+import Link from 'next/link'
 import {
   CheckIcon,
   ClockIcon,
+  CurrencyBangladeshiIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import { Button } from '@/app/ui/button';
-import { createInvoice } from '@/app/lib/actions'
+} from '@heroicons/react/24/outline'
+import { Button } from '@/app/ui/button'
+import { createInvoice, createMovement } from '@/app/lib/actions'
+import './styles/movements.css'
 
 export default function FormPage({ customers }: { customers: CustomerField[] }) {
   return (
-    <form action={createInvoice}>
+
+    <form action={createMovement}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6 dark:bg-gray-800 dark:text-gray-100">
         {/* Customer Name */}
         <div className="mb-4">
@@ -38,27 +41,65 @@ export default function FormPage({ customers }: { customers: CustomerField[] }) 
           </div>
         </div>
 
-        {/* Invoice Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Movimiento en USD
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.1"
-                placeholder="Enter USD amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
-              />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+        <div className='valuesContainer'>
+          {/* Value Amount */}
+          <div className="mb-4">
+            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+              Cant en USD
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="value"
+                  name="value"
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter USD amount"
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          </div>
+          {/* Tokens Amount */}
+          <div className="mb-4">
+            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+              Tokens
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="tokens"
+                  name="tokens"
+                  type="number"
+                  step="0.01"
+                  placeholder="Enter tokens amount"
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                <CurrencyBangladeshiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Invoice Status */}
+        <div className="mb-4">
+          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            Fecha
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="date"
+                name="date"
+                type="date"
+                className="peer block min-w-2 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+              />
+              {/* <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
+            </div>
+          </div>
+        </div>
+
+        {/* Status */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
             Status
@@ -99,14 +140,14 @@ export default function FormPage({ customers }: { customers: CustomerField[] }) 
           </div>
         </fieldset>
       </div>
+
       <div className="mt-6 flex justify-end gap-4">
-        <Link href="/dashboard/invoices"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
+        <Link className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          href="/dashboard/invoices" >
           Cancel
         </Link>
         <Button type="submit">Crear</Button>
       </div>
     </form>
-  );
+  )
 }

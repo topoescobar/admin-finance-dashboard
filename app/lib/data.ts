@@ -139,7 +139,7 @@ export async function fetchFilteredMovements(query: string, currentPage: number,
         movements.date,
         movements.status,
         customers.name,
-        customers.email
+        customers.image_url
       FROM movements
       JOIN customers ON movements.customer_id = customers.id
       WHERE

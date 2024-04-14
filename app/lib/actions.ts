@@ -17,6 +17,16 @@ const InvoiceSchema = z.object({
   status: z.enum(['pending', 'paid']),
   date: z.string(),
 })
+
+const MovementSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  value: z.coerce.number(),
+  tokens: z.coerce.number(),
+  status: z.enum(['pending', 'paid']),
+  date: z.string(),
+}) 
+
 //omitimos el id y la fecha que no vienen en el form
 const InvoiceFormSchema = InvoiceSchema.omit({ id: true, date: true })
 export async function createInvoice(formData: FormData) {
@@ -45,6 +55,28 @@ export async function createInvoice(formData: FormData) {
   redirect('/dashboard/invoices')
 }
 
+const FormMovementSchema = MovementSchema.omit({ id: true })
+export async function createMovement(formData: FormData) {
+  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
+
+  const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allFormData) //data validadada
+  // const date = new Date().toISOString().split('T')[0] //el 2do elemento es la hora
+
+  try {
+    //subir a DB
+    await sql
+      `INSERT INTO movements (customer_id, value, tokens, status, date)
+      VALUES (${customerId}, ${value}, ${tokens}, ${status}, ${date})`
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create Invoice.',
+    }
+  }
+  revalidatePath('/dashboard/invoices') //revalidar para que no use datos de cache
+  redirect('/dashboard/invoices')
+}
+
 const UpdateInvoice = InvoiceSchema.omit({ id: true, date: true, })
 export async function updateInvoice(id: string, formData: FormData) {
   const { customerId, amount, status } = UpdateInvoice.parse({ //extract data and validate with zod-parse
@@ -58,6 +90,23 @@ export async function updateInvoice(id: string, formData: FormData) {
     await sql`
       UPDATE invoices
       SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id} `
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Invoice.' }
+  }
+
+  revalidatePath('/dashboard/invoices')
+  redirect('/dashboard/invoices')
+}
+
+export async function updateMovement(id: string, formData: FormData) {
+  const allUpdateData = Object.fromEntries(formData)
+  const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allUpdateData)  
+  
+  try {
+    await sql`
+      UPDATE movements
+      SET customer_id = ${customerId}, value = ${value}, tokens = ${tokens}, status = ${status}, date = ${date}
       WHERE id = ${id} `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.' }

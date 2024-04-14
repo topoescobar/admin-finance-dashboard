@@ -1,6 +1,6 @@
 'use client'
 
-import { CustomerField, InvoiceForm, MovementForm } from '@/app/lib/definitions'
+import { CustomerField, InvoiceForm, MovementEditForm, MovementForm } from '@/app/lib/definitions'
 import {
   CalendarIcon,
   CheckIcon,
@@ -11,17 +11,16 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Button } from '@/app/ui/button'
-import { updateInvoice } from '@/app/lib/actions'
+import { updateInvoice, updateMovement } from '@/app/lib/actions'
 import './styles/movements.css'
 
-export default function EditInvoiceForm({
-  invoice,
-  customers,
-}: {
-  invoice: MovementForm
-  customers: CustomerField[]
-}) {
-  const updateWithId = updateInvoice.bind(null, invoice.id) //using bind to ensure that the values passed to the Server Action are encoded.
+export default function EditMovementForm({ invoice, customers, }:
+  { invoice: MovementEditForm, customers: CustomerField[] }) {
+
+  const updateWithId = updateMovement.bind(null, invoice.id) //using bind to ensure that the values passed to the Server Action are encoded.
+
+  const formattedDate = invoice.date.toISOString().split('T')[0]
+  console.log('formattedDate', formattedDate)
 
   return (
     <form action={updateWithId}>
@@ -64,7 +63,7 @@ export default function EditInvoiceForm({
                   id="value"
                   name="value"
                   type="number"
-                  step="1.0"
+                  step="0.01"
                   defaultValue={invoice.value}
                   placeholder="Enter USD amount"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
@@ -84,7 +83,7 @@ export default function EditInvoiceForm({
                   id="tokens"
                   name="tokens"
                   type="number"
-                  step="1.0"
+                  step="0.01"
                   defaultValue={invoice.tokens}
                   placeholder="Enter tokens amount"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
@@ -106,7 +105,7 @@ export default function EditInvoiceForm({
                 id="date"
                 name="date"
                 type="date"
-                defaultValue={invoice.date}
+                defaultValue={formattedDate}
                 className="peer block min-w-2 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
               />
               {/* <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}

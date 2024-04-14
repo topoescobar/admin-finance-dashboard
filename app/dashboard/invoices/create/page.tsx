@@ -9,9 +9,9 @@ export default async function CreateInvoice() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Movimientos', href: '/dashboard/invoices' },
           {
-            label: 'Create Invoice',
+            label: 'Crear nuevo',
             href: '/dashboard/invoices/create',
             active: true,
           },
