@@ -1,22 +1,25 @@
-'use client';
+'use client'
 
-import { CustomerField, InvoiceForm } from '@/app/lib/definitions';
+import { CustomerField, InvoiceForm, MovementForm } from '@/app/lib/definitions'
 import {
+  CalendarIcon,
   CheckIcon,
   ClockIcon,
+  CurrencyBangladeshiIcon,
   CurrencyDollarIcon,
   UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
+} from '@heroicons/react/24/outline'
+import Link from 'next/link'
+import { Button } from '@/app/ui/button'
 import { updateInvoice } from '@/app/lib/actions'
+import './styles/movements.css'
 
 export default function EditInvoiceForm({
   invoice,
   customers,
 }: {
-  invoice: InvoiceForm;
-  customers: CustomerField[];
+  invoice: MovementForm
+  customers: CustomerField[]
 }) {
   const updateWithId = updateInvoice.bind(null, invoice.id) //using bind to ensure that the values passed to the Server Action are encoded.
 
@@ -49,23 +52,64 @@ export default function EditInvoiceForm({
           </div>
         </div>
 
-        {/* Invoice Amount */}
+        <div className='valuesContainer'>
+          {/* Value Amount */}
+          <div className="mb-4">
+            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+              Cant en USD
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="value"
+                  name="value"
+                  type="number"
+                  step="1.0"
+                  defaultValue={invoice.value}
+                  placeholder="Enter USD amount"
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          </div>
+          {/* Tokens Amount */}
+          <div className="mb-4">
+            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+              Tokens
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="tokens"
+                  name="tokens"
+                  type="number"
+                  step="1.0"
+                  defaultValue={invoice.tokens}
+                  placeholder="Enter tokens amount"
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                <CurrencyBangladeshiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* DATE */}
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Cant en USD
+            Fecha
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                defaultValue={invoice.amount}
-                placeholder="Enter USD amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                id="date"
+                name="date"
+                type="date"
+                defaultValue={invoice.date}
+                className="peer block min-w-2 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
               />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              {/* <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
             </div>
           </div>
         </div>
@@ -120,5 +164,5 @@ export default function EditInvoiceForm({
         <Button type="submit">Confirmar</Button>
       </div>
     </form>
-  );
+  )
 }

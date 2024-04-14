@@ -1,12 +1,13 @@
 import Image from 'next/image'
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons'
-import InvoiceStatus from '@/app/ui/invoices/status'
+import { UpdateInvoice, DeleteInvoice } from '@/app/ui/movements/buttons'
+import InvoiceStatus from '@/app/ui/movements/status'
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils'
-import { fetchFilteredInvoices } from '@/app/lib/data'
+import { fetchFilteredInvoices, fetchFilteredMovements } from '@/app/lib/data'
 
-export default async function InvoicesTable({ query, currentPage, }:{ query: string; currentPage: number }) {
+export default async function MovementsTable({ query, currentPage, }:{ query: string; currentPage: number }) {
 
-  const invoices = await fetchFilteredInvoices(query, currentPage)
+  // const inoices = await fetchFilteredInvoices(query, currentPage)
+  const movements = await fetchFilteredMovements(query, currentPage)
 
   return (
     <div className="mt-6 flow-root">
@@ -14,18 +15,17 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0 dark:bg-slate-800 dark:text-white">
           {/* MOBILE */}
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {movements?.map((invoice) => (
               <div key={invoice.id} className="mb-2 w-full rounded-md bg-white p-4 dark:bg-slate-900">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <Image
+                      {/* <Image
                         src={invoice.image_url}
                         className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
+                        width={28} height={28}
                         alt={`${invoice.name}'s profile picture`}
-                      />
+                      /> */}
                       <p>{invoice.name}</p>
                     </div>
                     <p className="text-sm text-gray-500">{invoice.email}</p>
@@ -35,7 +35,7 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(invoice.amount)}
+                      {formatCurrency(invoice.value)}
                     </p>
                     <p>{formatDateToLocal(invoice.date)}</p>
                   </div>
@@ -52,43 +52,30 @@ export default async function InvoicesTable({ query, currentPage, }:{ query: str
           <table className="hidden min-w-full text-gray-900 md:table dark:text-white">
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
-                <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Cliente
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Cantidad
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Fecha
-                </th>
-                <th scope="col" className="px-3 py-5 font-medium">
-                  Status
-                </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
-                </th>
+                <th scope="col" className="px-4 py-5 font-medium sm:pl-6"> Cliente </th>
+                <th scope="col" className="px-3 py-5 font-medium"> Valor </th>
+                <th scope="col" className="px-3 py-5 font-medium"> Tokens </th>
+                <th scope="col" className="px-3 py-5 font-medium"> Fecha </th>
+                <th scope="col" className="px-3 py-5 font-medium"> Status </th>
+                <th scope="col" className="relative py-3 pl-6 pr-3"> <span className="sr-only">Edit</span> </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-slate-700">
-              {invoices?.map((invoice) => (
+              {movements?.map((invoice) => (
                 <tr
                   key={invoice.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
                       <p>{invoice.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(invoice.amount)}
+                    {formatCurrency(invoice.value)}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {invoice.tokens}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(invoice.date)}

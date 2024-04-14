@@ -1,19 +1,19 @@
-import Pagination from '@/app/ui/invoices/pagination'
+import Pagination from '@/app/ui/movements/pagination'
 import Search from '@/app/ui/search'
-import Table from '@/app/ui/invoices/table'
-import { CreateInvoice } from '@/app/ui/invoices/buttons'
+import Table from '@/app/ui/movements/table'
+import { CreateInvoice } from '@/app/ui/movements/buttons'
 import { lusitana } from '@/app/ui/fonts'
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons'
 import { Suspense } from 'react'
 import { string } from 'zod'
-import { fetchInvoicesPages } from '@/app/lib/data'
+import { fetchInvoicesPages, fetchMovementsPages } from '@/app/lib/data'
 
-export default async function invoicesPage({ searchParams, }:
+export default async function movementsPage({ searchParams, }:
   { searchParams?: { search?: string, page?: string } }) {
 
   const query = searchParams?.search || ''
   const currentPage = Number(searchParams?.page) || 1
-  const totalPages = await fetchInvoicesPages(query)
+  const totalPages = await fetchMovementsPages(query)
 
   return (
     <div className="w-full">

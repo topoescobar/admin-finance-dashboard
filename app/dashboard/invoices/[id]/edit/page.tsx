@@ -1,12 +1,12 @@
-import Form from '@/app/ui/invoices/edit-form'
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs'
-import { fetchCustomers, fetchInvoiceById } from '@/app/lib/data'
+import Form from '@/app/ui/movements/edit-form'
+import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
+import { fetchCustomers, fetchInvoiceById, fetchMovementById } from '@/app/lib/data'
 import { notFound } from 'next/navigation'
 
 export default async function EditInvoice({ params }: { params: { id: string } }) {
   const { id } = params
   const [invoice, customers] = await Promise.all([
-    fetchInvoiceById(id),
+    fetchMovementById(id),
     fetchCustomers(),
   ])
 
