@@ -126,6 +126,16 @@ export async function deleteInvoice(id: string) {
   revalidatePath('/dashboard/invoices')
 }
 
+export async function deleteMovement(id: string) {
+  try {
+    await sql`DELETE FROM movements WHERE id = ${id}`
+  } catch (error) {
+    console.log(error)
+    return { message: 'Database Error: Failed to Delete Invoice.' }
+  }
+  revalidatePath('/dashboard/invoices')
+}
+
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
