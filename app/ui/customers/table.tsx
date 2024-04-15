@@ -94,7 +94,7 @@ export default async function CustomersTable({ customers,}: { customers: Formatt
                       <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={customer.image_url}
+                            src={customer.image_url || '/customers/noavatar.png'}
                             className="rounded-full"
                             alt={`${customer.name}'s profile picture`}
                             width={28}

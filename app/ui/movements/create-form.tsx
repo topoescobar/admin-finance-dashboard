@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/app/ui/button'
-import { createInvoice, createMovement } from '@/app/lib/actions'
+import { createMovement } from '@/app/lib/actions'
 import './styles/movements.css'
 
 export default function FormPage({ customers }: { customers: CustomerField[] }) {
