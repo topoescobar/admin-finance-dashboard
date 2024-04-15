@@ -5,6 +5,7 @@ import {
   CustomersTableType,
   FormattedCustomersTable,
 } from '@/app/lib/definitions';
+import { CreateCustomer } from '../movements/buttons'
 
 export default async function CustomersTable({ customers,}: { customers: FormattedCustomersTable[];
 }) {
@@ -13,7 +14,10 @@ export default async function CustomersTable({ customers,}: { customers: Formatt
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
         Clientes
       </h1>
-      <Search placeholder="Buscar nombre" />
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Buscar..." />
+        <CreateCustomer />
+      </div>
       <div className="mt-6 flow-root">
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">

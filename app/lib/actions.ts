@@ -10,14 +10,6 @@ import bcrypt from 'bcrypt'
 //todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
-const InvoiceSchema = z.object({
-  id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(['pending', 'paid']),
-  date: z.string(),
-})
-
 const MovementSchema = z.object({
   id: z.string(),
   customerId: z.string(),
@@ -27,40 +19,27 @@ const MovementSchema = z.object({
   date: z.string(),
 }) 
 
-//omitimos el id y la fecha que no vienen en el form
-const InvoiceFormSchema = InvoiceSchema.omit({ id: true, date: true })
-export async function createInvoice(formData: FormData) {
-  // const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const rawFormData = {
-    customerId: formData.get('customerId'), //names de los campos del formulario
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  }
-  const { customerId, amount, status } = InvoiceFormSchema.parse(rawFormData) //data validadada
-  const amountInCents = amount * 100
-  const date = new Date().toISOString().split('T')[0] //el 2do elemento es la hora
+const RegisterSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  username: z.string().min(4),
+})
 
-  try {
-    //subir a DB
-    await sql
-      `INSERT INTO invoices (customer_id, amount, status, date) 
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`
-  } catch (error) {
-    console.log(error)
-    return {
-      message: 'Database Error: Failed to Create Invoice.',
-    }
-  }
-  revalidatePath('/dashboard/invoices') //revalidar para que no use datos de cache
-  redirect('/dashboard/invoices')
-}
+const UserSchema = z.object({
+  id: z.string(),
+  name: z.string().min(4),
+  email: z.string().email(),
+  image_url: z.string(),
+})
 
+//omitir id que no viene en form
 const FormMovementSchema = MovementSchema.omit({ id: true })
+const FormUserSchema = UserSchema.omit({ id: true })
 export async function createMovement(formData: FormData) {
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
 
   const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allFormData) //data validadada
-  // const date = new Date().toISOString().split('T')[0] //el 2do elemento es la hora
+  // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
 
   try {
     //subir a DB
@@ -74,28 +53,6 @@ export async function createMovement(formData: FormData) {
     }
   }
   revalidatePath('/dashboard/invoices') //revalidar para que no use datos de cache
-  redirect('/dashboard/invoices')
-}
-
-const UpdateInvoice = InvoiceSchema.omit({ id: true, date: true, })
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({ //extract data and validate with zod-parse
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  })
-  const amountInCents = amount * 100
-
-  try {
-    await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id} `
-  } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' }
-  }
-
-  revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
 }
 
@@ -114,16 +71,6 @@ export async function updateMovement(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/invoices')
   redirect('/dashboard/invoices')
-}
-
-export async function deleteInvoice(id: string) {
-  try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`
-  } catch (error) {
-    console.log(error)
-    return { message: 'Database Error: Failed to Delete Invoice.' }
-  }
-  revalidatePath('/dashboard/invoices')
 }
 
 export async function deleteMovement(id: string) {
@@ -155,11 +102,6 @@ export async function authenticate(
   }
 }
 
-const RegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  username: z.string().min(4),
-})
 export async function register(formData: FormData) {
   const allData = Object.fromEntries(formData)
   const { email, username, password } = RegisterSchema.parse(allData)
@@ -172,4 +114,24 @@ export async function register(formData: FormData) {
   }
   revalidatePath('/login')
   redirect('/login')
+}
+
+export async function createUser(formData: FormData) {
+  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
+
+  const { name, email, image_url } = FormUserSchema.parse(allFormData) //data validadada
+  console.log(allFormData)
+  try {
+    //subir a DB
+    await sql
+      `INSERT INTO customers ( name, email, image_url)
+      VALUES (${name}, ${email}, ${image_url})`
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create User.',
+    }
+  }
+  revalidatePath('/dashboard/customers') //revalidar para que no use datos de cache
+  redirect('/dashboard/customers')
 }
