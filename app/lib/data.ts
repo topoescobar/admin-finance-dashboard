@@ -137,6 +137,7 @@ export async function fetchFilteredMovements(query: string, currentPage: number,
         movements.id,
         movements.value,
         movements.tokens,
+        movements.vault,
         movements.date,
         movements.status,
         customers.name,
@@ -146,6 +147,7 @@ export async function fetchFilteredMovements(query: string, currentPage: number,
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
+        movements.vault ILIKE ${`%${query}%`} OR
         movements.value::text ILIKE ${`%${query}%`} OR
         movements.date::text ILIKE ${`%${query}%`} OR
         movements.status ILIKE ${`%${query}%`}

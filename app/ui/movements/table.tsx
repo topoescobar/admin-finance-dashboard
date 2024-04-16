@@ -55,9 +55,10 @@ export default async function MovementsTable({ query, currentPage, }:{ query: st
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6"> Cliente </th>
                 <th scope="col" className="px-3 py-5 font-medium"> Valor </th>
                 <th scope="col" className="px-3 py-5 font-medium"> Tokens </th>
+                <th scope="col" className="px-3 py-5 font-medium"> Fondo </th>
                 <th scope="col" className="px-3 py-5 font-medium"> Fecha </th>
                 <th scope="col" className="px-3 py-5 font-medium"> Status </th>
-                <th scope="col" className="relative py-3 pl-6 pr-3"> <span className="sr-only">Edit</span> </th>
+                <th scope="col" className="relative py-3 pl-6 pr-3"> <span className="sr-only">Actions</span> </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-slate-700">
@@ -81,6 +82,9 @@ export default async function MovementsTable({ query, currentPage, }:{ query: st
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {invoice.tokens}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-3">
+                    {invoice.vault}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(invoice.date)}

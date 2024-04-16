@@ -15,6 +15,7 @@ const MovementSchema = z.object({
   customerId: z.string(),
   value: z.coerce.number(),
   tokens: z.coerce.number(),
+  vault: z.string(),
   status: z.enum(['pending', 'paid']),
   date: z.string(),
 }) 
@@ -28,8 +29,8 @@ const RegisterSchema = z.object({
 const UserSchema = z.object({
   id: z.string(),
   name: z.string().min(4),
-  email: z.string().email(),
-  image_url: z.string(),
+  email: z.string().email().optional(),
+  image_url: z.string().optional(),
 })
 
 //omitir id que no viene en form
@@ -38,14 +39,14 @@ const FormUserSchema = UserSchema.omit({ id: true })
 export async function createMovement(formData: FormData) {
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
 
-  const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allFormData) //data validadada
+  const { customerId, value, tokens, vault, status, date } = FormMovementSchema.parse(allFormData) //data validadada
   // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
 
   try {
     //subir a DB
     await sql
-      `INSERT INTO movements (customer_id, value, tokens, status, date)
-      VALUES (${customerId}, ${value}, ${tokens}, ${status}, ${date})`
+      `INSERT INTO movements (customer_id, value, tokens, status, date, vault)
+      VALUES (${customerId}, ${value}, ${tokens}, ${status}, ${date}, ${vault})`
   } catch (error) {
     console.log(error)
     return {
@@ -116,11 +117,16 @@ export async function register(formData: FormData) {
   redirect('/login')
 }
 
-export async function createUser(formData: FormData) {
-  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
+export async function createCustomer(formData: FormData) {
 
-  const { name, email, image_url } = FormUserSchema.parse(allFormData) //data validadada
-  console.log(allFormData)
+  const rawData = {
+    name: formData.get('name'),
+    email: formData.get('email') ,
+    image_url: formData.get('image_url') ,
+  }
+
+  const { name, email, image_url } = FormUserSchema.parse(rawData) //data validadada
+  
   try {
     //subir a DB
     await sql

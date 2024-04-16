@@ -80,6 +80,31 @@ export default function FormPage({ customers }: { customers: CustomerField[] }) 
               </div>
             </div>
           </div>
+          {/* Vault name */}
+          <div className="mb-4">
+            <label htmlFor="vault" className="mb-2 block text-sm font-medium">
+              Elegir bóveda
+            </label>
+            <div className="relative">
+              <select
+                id="vault"
+                name="vault"
+                defaultValue=''
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+              >
+                <option value="" disabled>
+                  Seleccionar
+                </option>
+                  <option value="FCA">
+                    FCA: Fractal Crypto ahorro
+                  </option>
+                <option value="FCD">
+                  FCD: Fractal crypto dinamico
+                </option>
+              </select>
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
         </div>
 
         <div className="mb-4">
