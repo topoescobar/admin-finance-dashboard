@@ -1,4 +1,4 @@
-import { deleteMovement } from '@/app/lib/actions'
+import { deleteCustomer, deleteMovement } from '@/app/lib/actions'
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -44,5 +44,30 @@ export function CreateCustomer() {
       <span className="hidden md:block">Agregar nuevo</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
+  )
+}
+
+export function UpdateCustomer({ id }: { id: string }) {
+  return (
+    <Link
+      href={`/dashboard/customers/${id}/edit`}
+      className="rounded-md border p-2 hover:bg-gray-100 hover:text-indigo-600"
+    >
+      <PencilIcon className="w-5" />
+    </Link>
+  )
+}
+
+export function DeleteCustomer({ id }: { id: string }) {
+  const deleteWithId = deleteCustomer.bind(null, id)
+  return (
+    <>
+      <form action={deleteWithId}>
+        <button className="rounded-md border p-2 hover:bg-gray-100 hover:text-indigo-600">
+          <span className="sr-only">Eliminar</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </form>
+    </>
   )
 }

@@ -5,9 +5,9 @@ import {
   CustomersTableType,
   FormattedCustomersTable,
 } from '@/app/lib/definitions';
-import { CreateCustomer } from '../movements/buttons'
+import { CreateCustomer, DeleteCustomer, UpdateCustomer } from '../movements/buttons'
 
-export default async function CustomersTable({ customers,}: { customers: FormattedCustomersTable[];
+export default function CustomersTable({ customers,}: { customers: FormattedCustomersTable[];
 }) {
   return (
     <div className="w-full">
@@ -85,6 +85,9 @@ export default async function CustomersTable({ customers,}: { customers: Formatt
                     <th scope="col" className="px-4 py-5 font-medium">
                       Total Invertido
                     </th>
+                    <th scope="col" className="px-4 py-5 font-medium">
+                      Acciones
+                    </th>
                   </tr>
                 </thead>
 
@@ -114,6 +117,12 @@ export default async function CustomersTable({ customers,}: { customers: Formatt
                       </td>
                       <td className="whitespace-nowrap px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
                         {customer.total_paid}
+                      </td>
+                      <td className="whitespace-nowrap px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
+                        <div className="flex justify-end gap-3">
+                          <UpdateCustomer id={customer.id} />
+                          <DeleteCustomer id={customer.id} />
+                        </div>
                       </td>
                     </tr>
                   ))}

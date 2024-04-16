@@ -11,7 +11,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Button } from '@/app/ui/button'
-import { updateInvoice, updateMovement } from '@/app/lib/actions'
+import { updateMovement } from '@/app/lib/actions'
 import './styles/movements.css'
 
 export default function EditMovementForm({ invoice, customers, }:

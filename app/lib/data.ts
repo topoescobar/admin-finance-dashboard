@@ -9,6 +9,7 @@ import {
   User,
   Revenue,
   MovementForm,
+  Customer,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -179,32 +180,6 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-export async function fetchInvoiceById(id: string) {
-  unstable_noStore()
-  try {
-    const data = await sql<InvoiceForm>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `
-
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }))
-
-    return invoice[0]
-  } catch (error) {
-    console.error('Database Error:', error)
-    throw new Error('Failed to fetch invoice.')
-  }
-}
-
 export async function fetchMovementById(id: string) {
   unstable_noStore()
   try {
@@ -234,7 +209,6 @@ export async function fetchMovementById(id: string) {
   }
 }
 
-
 export async function fetchMovementsPages(query: string) {
   unstable_noStore()
   try {
@@ -256,7 +230,6 @@ export async function fetchMovementsPages(query: string) {
     throw new Error('Failed to fetch total number of invoices.')
   }
 }
-
 
 export async function fetchCustomers() {
   try {
@@ -317,5 +290,26 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error)
     throw new Error('Failed to fetch user.')
+  }
+}
+
+export async function fetchCustomerById(id: string) {
+  unstable_noStore()
+  try {
+    const data = await sql<Customer>`
+      SELECT
+        customers.id,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM customers
+      WHERE customers.id = ${id};
+    `
+    console.log('data customer by id', data.rows[0])
+    return data.rows[0]
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch customer by id.')
   }
 }

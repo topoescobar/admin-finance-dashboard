@@ -135,3 +135,30 @@ export async function createUser(formData: FormData) {
   revalidatePath('/dashboard/customers') //revalidar para que no use datos de cache
   redirect('/dashboard/customers')
 }
+
+export async function deleteCustomer(id: string) {
+  try {
+    await sql`DELETE FROM customers WHERE id = ${id}`
+  } catch (error) {
+    console.log(error)
+    return { message: 'Database Error: Failed to Delete customer.' }
+  }
+  revalidatePath('/dashboard/customers')
+}
+
+export async function updateCustomer(id: string, formData: FormData) {
+  const allUpdateData = Object.fromEntries(formData)
+  const { name, email, image_url } = FormUserSchema.parse(allUpdateData)
+
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      WHERE id = ${id} `
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Customer.' }
+  }
+
+  revalidatePath('/dashboard/customers')
+  redirect('/dashboard/customers')
+}
