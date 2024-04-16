@@ -1,5 +1,5 @@
-import Form from '@/app/ui/invoices/create-form'
-import Breadcrumbs from '@/app/ui/invoices/breadcrumbs'
+import Form from '@/app/ui/movements/create-form'
+import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
 import { fetchCustomers } from '@/app/lib/data'
 
 export default async function CreateInvoice() {
@@ -9,9 +9,9 @@ export default async function CreateInvoice() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Movimientos', href: '/dashboard/invoices' },
           {
-            label: 'Create Invoice',
+            label: 'Crear nuevo',
             href: '/dashboard/invoices/create',
             active: true,
           },

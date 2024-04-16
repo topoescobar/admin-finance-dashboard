@@ -55,6 +55,17 @@ export type InvoicesTable = {
   status: 'pending' | 'paid';
 };
 
+export type MovementsTable = {
+  id: string
+  customer_id: string
+  name: string
+  email: string
+  date: string
+  value: number
+  tokens: number
+  status: 'pending' | 'paid'
+}
+
 export type CustomersTableType = {
   id: string;
   name: string;
@@ -86,3 +97,12 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type MovementForm = {
+  id: string
+  customer_id: string
+  value: number
+  tokens: number
+  status: 'pending' | 'paid'
+  date: Date
+}

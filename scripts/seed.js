@@ -50,7 +50,7 @@ async function seedInvoices(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    // Create the "invoices" table if it doesn't exist
+    // Create the "invoices" table if it doesn't existw
     const createTable = await client.sql`
     CREATE TABLE IF NOT EXISTS invoices (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -58,9 +58,7 @@ async function seedInvoices(client) {
     amount INT NOT NULL,
     status VARCHAR(255) NOT NULL,
     date DATE NOT NULL
-  );
-`;
-
+  )`;
     console.log(`Created "invoices" table`);
 
     // Insert data into the "invoices" table
@@ -73,9 +71,7 @@ async function seedInvoices(client) {
       `,
       ),
     );
-
     console.log(`Seeded ${insertedInvoices.length} invoices`);
-
     return {
       createTable,
       invoices: insertedInvoices,

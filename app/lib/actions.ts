@@ -5,34 +5,48 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
+import bcrypt from 'bcrypt'
+
 //todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
-const InvoiceSchema = z.object({
+const MovementSchema = z.object({
   id: z.string(),
   customerId: z.string(),
-  amount: z.coerce.number(),
+  value: z.coerce.number(),
+  tokens: z.coerce.number(),
+  vault: z.string(),
   status: z.enum(['pending', 'paid']),
   date: z.string(),
+}) 
+
+const RegisterSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  username: z.string().min(4),
 })
-//omitimos el id y la fecha que no vienen en el form
-const InvoiceFormSchema = InvoiceSchema.omit({ id: true, date: true })
-export async function createInvoice(formData: FormData) {
-  // const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const rawFormData = {
-    customerId: formData.get('customerId'), //names de los campos del formulario
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  }
-  const { customerId, amount, status } = InvoiceFormSchema.parse(rawFormData) //data validadada
-  const amountInCents = amount * 100
-  const date = new Date().toISOString().split('T')[0] //el 2do elemento es la hora
+
+const UserSchema = z.object({
+  id: z.string(),
+  name: z.string().min(4),
+  email: z.string().email().optional(),
+  image_url: z.string().optional(),
+})
+
+//omitir id que no viene en form
+const FormMovementSchema = MovementSchema.omit({ id: true })
+const FormUserSchema = UserSchema.omit({ id: true })
+export async function createMovement(formData: FormData) {
+  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
+
+  const { customerId, value, tokens, vault, status, date } = FormMovementSchema.parse(allFormData) //data validadada
+  // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
 
   try {
     //subir a DB
     await sql
-      `INSERT INTO invoices (customer_id, amount, status, date) 
-      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})`
+      `INSERT INTO movements (customer_id, value, tokens, status, date, vault)
+      VALUES (${customerId}, ${value}, ${tokens}, ${status}, ${date}, ${vault})`
   } catch (error) {
     console.log(error)
     return {
@@ -43,19 +57,14 @@ export async function createInvoice(formData: FormData) {
   redirect('/dashboard/invoices')
 }
 
-const UpdateInvoice = InvoiceSchema.omit({ id: true, date: true, })
-export async function updateInvoice(id: string, formData: FormData) {
-  const { customerId, amount, status } = UpdateInvoice.parse({ //extract data and validate with zod-parse
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  })
-  const amountInCents = amount * 100
-
+export async function updateMovement(id: string, formData: FormData) {
+  const allUpdateData = Object.fromEntries(formData)
+  const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allUpdateData)  
+  
   try {
     await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      UPDATE movements
+      SET customer_id = ${customerId}, value = ${value}, tokens = ${tokens}, status = ${status}, date = ${date}
       WHERE id = ${id} `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Invoice.' }
@@ -65,9 +74,9 @@ export async function updateInvoice(id: string, formData: FormData) {
   redirect('/dashboard/invoices')
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteMovement(id: string) {
   try {
-    await sql`DELETE FROM invoices WHERE id = ${id}`
+    await sql`DELETE FROM movements WHERE id = ${id}`
   } catch (error) {
     console.log(error)
     return { message: 'Database Error: Failed to Delete Invoice.' }
@@ -92,4 +101,70 @@ export async function authenticate(
     }
     throw error
   }
+}
+
+export async function register(formData: FormData) {
+  const allData = Object.fromEntries(formData)
+  const { email, username, password } = RegisterSchema.parse(allData)
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  try {
+    await sql `INSERT INTO users (email, name, password) VALUES (${email}, ${username}, ${hashedPassword})`
+  } catch (error) {
+    console.log(error)
+  }
+  revalidatePath('/login')
+  redirect('/login')
+}
+
+export async function createCustomer(formData: FormData) {
+
+  const rawData = {
+    name: formData.get('name'),
+    email: formData.get('email') ,
+    image_url: formData.get('image_url') ,
+  }
+
+  const { name, email, image_url } = FormUserSchema.parse(rawData) //data validadada
+  
+  try {
+    //subir a DB
+    await sql
+      `INSERT INTO customers ( name, email, image_url)
+      VALUES (${name}, ${email}, ${image_url})`
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create User.',
+    }
+  }
+  revalidatePath('/dashboard/customers') //revalidar para que no use datos de cache
+  redirect('/dashboard/customers')
+}
+
+export async function deleteCustomer(id: string) {
+  try {
+    await sql`DELETE FROM customers WHERE id = ${id}`
+  } catch (error) {
+    console.log(error)
+    return { message: 'Database Error: Failed to Delete customer.' }
+  }
+  revalidatePath('/dashboard/customers')
+}
+
+export async function updateCustomer(id: string, formData: FormData) {
+  const allUpdateData = Object.fromEntries(formData)
+  const { name, email, image_url } = FormUserSchema.parse(allUpdateData)
+
+  try {
+    await sql`
+      UPDATE customers
+      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      WHERE id = ${id} `
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Customer.' }
+  }
+
+  revalidatePath('/dashboard/customers')
+  redirect('/dashboard/customers')
 }

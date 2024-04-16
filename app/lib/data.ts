@@ -4,9 +4,12 @@ import {
   CustomersTableType,
   InvoiceForm,
   InvoicesTable,
+  MovementsTable,
   LatestInvoiceRaw,
   User,
   Revenue,
+  MovementForm,
+  Customer,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -118,11 +121,43 @@ export async function fetchFilteredInvoices( query: string, currentPage: number,
       ORDER BY invoices.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `
-
     return invoices.rows
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch invoices.')
+  }
+}
+
+export async function fetchFilteredMovements(query: string, currentPage: number,) {
+  unstable_noStore()
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE
+  try {
+    const movements = await sql`
+      SELECT
+        movements.id,
+        movements.value,
+        movements.tokens,
+        movements.vault,
+        movements.date,
+        movements.status,
+        customers.name,
+        customers.image_url
+      FROM movements
+      JOIN customers ON movements.customer_id = customers.id
+      WHERE
+        customers.name ILIKE ${`%${query}%`} OR
+        customers.email ILIKE ${`%${query}%`} OR
+        movements.vault ILIKE ${`%${query}%`} OR
+        movements.value::text ILIKE ${`%${query}%`} OR
+        movements.date::text ILIKE ${`%${query}%`} OR
+        movements.status ILIKE ${`%${query}%`}
+      ORDER BY movements.date DESC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `
+    return movements.rows
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch movements.')
   }
 }
 
@@ -139,7 +174,6 @@ export async function fetchInvoicesPages(query: string) {
       invoices.date::text ILIKE ${`%${query}%`} OR
       invoices.status ILIKE ${`%${query}%`}
   `
-
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE)
     return totalPages
   } catch (error) {
@@ -148,29 +182,54 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchMovementById(id: string) {
   unstable_noStore()
   try {
-    const data = await sql<InvoiceForm>`
+    const data = await sql<MovementForm>`
       SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
+        movements.id,
+        movements.customer_id,
+        movements.value,
+        movements.tokens,
+        movements.status,
+        movements.date
+      FROM movements
+      WHERE movements.id = ${id};
     `
-
     const invoice = data.rows.map((invoice) => ({
       ...invoice,
       // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
+      amount: invoice.value / 100,
     }))
-
+    console.log("invoice", invoice)
+    console.log("data", data)
+    
     return invoice[0]
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch invoice.')
+  }
+}
+
+export async function fetchMovementsPages(query: string) {
+  unstable_noStore()
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM movements
+    JOIN customers ON movements.customer_id = customers.id
+    WHERE
+      customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} OR
+      movements.value::text ILIKE ${`%${query}%`} OR
+      movements.tokens::text ILIKE ${`%${query}%`} OR
+      movements.date::text ILIKE ${`%${query}%`} OR
+      movements.status ILIKE ${`%${query}%`}
+  `
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE)
+    return totalPages
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch total number of invoices.')
   }
 }
 
@@ -233,5 +292,26 @@ export async function getUser(email: string) {
   } catch (error) {
     console.error('Failed to fetch user:', error)
     throw new Error('Failed to fetch user.')
+  }
+}
+
+export async function fetchCustomerById(id: string) {
+  unstable_noStore()
+  try {
+    const data = await sql<Customer>`
+      SELECT
+        customers.id,
+        customers.name,
+        customers.email,
+        customers.image_url
+      FROM customers
+      WHERE customers.id = ${id};
+    `
+    console.log('data customer by id', data.rows[0])
+    return data.rows[0]
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch customer by id.')
   }
 }
