@@ -3,6 +3,7 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -14,6 +15,8 @@ const links = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
   { name: 'Movimientos', href: '/dashboard/invoices', icon: DocumentDuplicateIcon,},
   { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Fondos', href: '/dashboard/funds', icon: BanknotesIcon },
+
 ]
 
 export default function NavLinks() {
