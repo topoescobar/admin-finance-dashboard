@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { UpdateInvoice, DeleteInvoice } from '@/app/ui/movements/buttons'
 import InvoiceStatus from '@/app/ui/movements/status'
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils'
-import { fetchFilteredInvoices, fetchFilteredMovements } from '@/app/lib/data'
-
+import { fetchFilteredMovements } from '@/app/lib/data'
+import './styles/movements.css'
 export default async function MovementsTable({ query, currentPage, }:{ query: string; currentPage: number }) {
 
   // const inoices = await fetchFilteredInvoices(query, currentPage)
@@ -15,33 +15,33 @@ export default async function MovementsTable({ query, currentPage, }:{ query: st
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0 dark:bg-slate-800 dark:text-white">
           {/* MOBILE */}
           <div className="md:hidden">
-            {movements?.map((invoice) => (
-              <div key={invoice.id} className="mb-2 w-full rounded-md bg-white p-4 dark:bg-slate-900">
+            {movements?.map((tx) => (
+              <div key={tx.id} className="mb-2 w-full rounded-md bg-white p-4 dark:bg-slate-900">
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={invoice.image_url}
+                        src={tx.image_url == "" ? "/customers/noavatar.png" : tx.image_url}
                         className="mr-2 rounded-full"
                         width={28} height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`${tx.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p>{tx.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
+                    <p className="text-sm text-gray-500">{tx.email}</p>
                   </div>
-                  <InvoiceStatus status={invoice.status} />
+                  <InvoiceStatus status={tx.status} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
                     <p className="text-xl font-medium">
-                      {formatCurrency(invoice.value)}
+                      $ {tx.value} / tokens: {tx.tokens}
                     </p>
-                    <p>{formatDateToLocal(invoice.date)}</p>
+                    <p>{formatDateToLocal(tx.date)}</p>
                   </div>
                   <div className="flex justify-end gap-2">
-                    <UpdateInvoice id={invoice.id} />
-                    <DeleteInvoice id={invoice.id} />
+                    <UpdateInvoice id={tx.id} />
+                    <DeleteInvoice id={tx.id} />
                   </div>
                 </div>
               </div>
@@ -62,40 +62,40 @@ export default async function MovementsTable({ query, currentPage, }:{ query: st
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-slate-700">
-              {movements?.map((invoice) => (
+              {movements?.map((tx) => (
                 <tr
-                  key={invoice.id}
+                  key={tx.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image className="mr-2 rounded-full"
-                        src={invoice.image_url}
+                      <Image className="mr-2 rounded-full profileImage"
+                        src={tx.image_url == "" ? "/customers/noavatar.png" : tx.image_url}
                         width={28} height={28}
-                        alt={`${invoice.name}'s profile picture`}
+                        alt={`${tx.name}'s profile picture`}
                       />
-                      <p>{invoice.name}</p>
+                      <p>{tx.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    $ {invoice.value}
+                    $ {tx.value}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.tokens}
+                    {tx.tokens}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.vault}
+                    {tx.vault}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(invoice.date)}
+                    {formatDateToLocal(tx.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                    <InvoiceStatus status={tx.status} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateInvoice id={invoice.id} />
-                      <DeleteInvoice id={invoice.id} />
+                      <UpdateInvoice id={tx.id} />
+                      <DeleteInvoice id={tx.id} />
                     </div>
                   </td>
                 </tr>
