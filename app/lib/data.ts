@@ -10,6 +10,7 @@ import {
   Revenue,
   MovementForm,
   Customer,
+  TokenPriceTable,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -313,5 +314,26 @@ export async function fetchCustomerById(id: string) {
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch customer by id.')
+  }
+}
+
+export async function fetchTokenPrice() {
+  unstable_noStore()
+  try {
+    const data = await sql<TokenPriceTable>`
+      SELECT
+        tokenprices.id,
+        tokenprices.date,
+        tokenprices.price,
+        tokenprices.tokenname
+      FROM tokenprices
+      ORDER BY tokenprices.date DESC
+    `
+    const funds = data.rows
+    return funds
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch funds token prices.')
   }
 }

@@ -106,3 +106,10 @@ export type MovementForm = {
   status: 'pending' | 'paid'
   date: Date
 }
+
+export type TokenPriceTable = {
+  id: string
+  date: string,
+  tokenname: string,
+  price: number
+}
