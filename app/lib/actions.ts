@@ -2,7 +2,7 @@
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { z } from 'zod'
+import { date, z } from 'zod'
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
 import bcrypt from 'bcrypt'
@@ -33,12 +33,18 @@ const UserSchema = z.object({
   image_url: z.string().optional(),
 })
 
+const tokenPriceSchema = z.object({
+  price: z.coerce.number(),
+  tokenname: z.string(),
+  date: z.string()
+}) 
+
 //omitir id que no viene en form
 const FormMovementSchema = MovementSchema.omit({ id: true })
 const FormUserSchema = UserSchema.omit({ id: true })
 export async function createMovement(formData: FormData) {
-  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
 
+  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
   const { customerId, value, tokens, vault, status, date } = FormMovementSchema.parse(allFormData) //data validadada
   // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
 
@@ -167,4 +173,34 @@ export async function updateCustomer(id: string, formData: FormData) {
 
   revalidatePath('/dashboard/customers')
   redirect('/dashboard/customers')
+}
+
+export async function createTokenPrice(formData: FormData) {
+
+  const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
+  const { date, price, tokenname } = tokenPriceSchema.parse(allFormData) //data validadada
+  // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
+
+  try {
+    await sql
+      `INSERT INTO tokenprices (date, tokenname, price)
+      VALUES (${date}, ${tokenname}, ${price})`
+  } catch (error) {
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create token price.',
+    }
+  }
+  revalidatePath('/dashboard/funds') //revalidar para que no use datos de cache
+  // redirect('/dashboard/invoices')
+}
+
+export async function deletePriceWithId(id: string) {
+  try {
+    await sql`DELETE FROM tokenprices WHERE id = ${id}`
+  } catch (error) {
+    console.log(error)
+    return { message: 'Database Error: Failed to Delete token price.' }
+  }
+  revalidatePath('/dashboard/funds')
 }

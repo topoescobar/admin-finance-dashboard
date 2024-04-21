@@ -329,6 +329,7 @@ export async function fetchTokenPrice() {
       FROM tokenprices
       ORDER BY tokenprices.date DESC
     `
+    console.log('token price fetched')
     const funds = data.rows
     return funds
 

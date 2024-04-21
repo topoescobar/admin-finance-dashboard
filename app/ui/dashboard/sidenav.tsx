@@ -15,7 +15,7 @@ export default async function SideNav() {
       </Link>
 
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <div className='ml-2'>
+        <div className='ml-2 hidden md:block'>
           <span>{authData?.user?.name} </span> 
         </div>
         <NavLinks />

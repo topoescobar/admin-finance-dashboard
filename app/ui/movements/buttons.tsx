@@ -1,4 +1,4 @@
-import { deleteCustomer, deleteMovement } from '@/app/lib/actions'
+import { deleteCustomer, deleteMovement, deletePriceWithId } from '@/app/lib/actions'
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -64,6 +64,20 @@ export function DeleteCustomer({ id }: { id: string }) {
     <>
       <form action={deleteWithId}>
         <button className="rounded-md border p-2 hover:bg-gray-100 hover:text-indigo-600">
+          <span className="sr-only">Eliminar</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </form>
+    </>
+  )
+}
+
+export function DeletePrice({ id }: { id: string }) {
+  const deleteWithId = deletePriceWithId.bind(null, id)
+  return (
+    <>
+      <form action={deleteWithId}>
+        <button className="rounded-md border p-2 hover:bg-gray-100">
           <span className="sr-only">Eliminar</span>
           <TrashIcon className="w-5" />
         </button>
