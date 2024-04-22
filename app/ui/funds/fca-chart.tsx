@@ -1,6 +1,6 @@
 'use client'
 import { fetchTokenPrice } from '@/app/lib/data'
-import { TokenPriceTable } from '@/app/lib/definitions'
+import { TokenPriceTable, StatusColorType } from '@/app/lib/definitions'
 import { AreaChart, Card, List, ListItem } from '@tremor/react'
 
 function classNames(...classes: string[]) { return classes.filter(Boolean).join(' ') }
@@ -82,18 +82,24 @@ const summary = [
 const valueFormatter = (number: number) =>
   `${Intl.NumberFormat('us').format(number).toString()}`
 
-type StatusColorType = {
-  [key: string]: string
-  Organic: string
-  Sponsored: string
-}
-
 const statusColor: StatusColorType = {
   Organic: 'bg-blue-500',
   Sponsored: 'bg-violet-500',
 }
 
 export default function FcaChart({ tokenPrices }: { tokenPrices: TokenPriceTable[] } ) {
+
+  const formattedTokenPrices = tokenPrices
+  .filter(item => item.tokenname === 'FCA')
+  .sort((a, b) => a.date.getTime() - b.date.getTime())
+  .map((item) => ({
+    ...item,
+    date: new Date(item.date).toLocaleDateString('es-AR', {
+      month: 'short',
+      year: '2-digit',
+    })
+  }))
+  console.log('formattedTokenPrices', formattedTokenPrices)
 
   return (
     <>
@@ -102,15 +108,15 @@ export default function FcaChart({ tokenPrices }: { tokenPrices: TokenPriceTable
           FCA
         </h3>
         <AreaChart
-          data={data}
-          index="date"
-          categories={['Organic', 'Sponsored']}
+          data={formattedTokenPrices}
+          index={'date'}
+          categories={['price']}
           colors={['blue', 'violet']}
           valueFormatter={valueFormatter}
           showLegend={false}
           showYAxis={false}
           showGradient={false}
-          startEndOnly={true}
+          startEndOnly={false}
           className="mt-6 h-32"
         />
         <List className="mt-2">

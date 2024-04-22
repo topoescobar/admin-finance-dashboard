@@ -109,7 +109,13 @@ export type MovementForm = {
 
 export type TokenPriceTable = {
   id: string
-  date: string,
+  date: Date,
   tokenname: string,
   price: number
+}
+
+export type StatusColorType = {
+  [key: string]: string
+  Organic: string
+  Sponsored: string
 }
