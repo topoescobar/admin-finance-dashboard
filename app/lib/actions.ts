@@ -20,13 +20,14 @@ const MovementSchema = z.object({
   date: z.string(),
 }) 
 
-const RegisterSchema = z.object({
+const RegisterSchema = z.object({ //user
   email: z.string().email(),
   password: z.string().min(6),
   username: z.string().min(4),
+  customerId: z.string().optional(), 
 })
 
-const UserSchema = z.object({
+const UserSchema = z.object({ //customer
   id: z.string(),
   name: z.string().min(4),
   email: z.string().email().optional(),
