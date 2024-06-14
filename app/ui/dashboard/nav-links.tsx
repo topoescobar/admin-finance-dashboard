@@ -13,10 +13,9 @@ import { usePathname } from 'next/navigation'
 // Depending on the size of the application, this would be stored in a database.
 const links = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-  { name: 'Movimientos', href: '/dashboard/invoices', icon: DocumentDuplicateIcon,},
+  { name: 'Movimientos', href: '/dashboard/transactions', icon: DocumentDuplicateIcon,},
   { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'Fondos', href: '/dashboard/funds', icon: BanknotesIcon },
-
 ]
 
 export default function NavLinks() {

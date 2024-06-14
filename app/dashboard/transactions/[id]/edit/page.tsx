@@ -18,10 +18,10 @@ export default async function EditMovement({ params }: { params: { id: string }}
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Movements', href: '/dashboard/invoices' },
+          { label: 'Movements', href: '/dashboard/transactions' },
           {
             label: 'Edit movement',
-            href: `/dashboard/invoices/${id}/edit`,
+            href: `/dashboard/transactions/${id}/edit`,
             active: true,
           },
         ]}

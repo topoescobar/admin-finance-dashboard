@@ -59,8 +59,8 @@ export async function createMovement(formData: FormData) {
       message: 'Database Error: Failed to Create Invoice.',
     }
   }
-  revalidatePath('/dashboard/invoices') //revalidar para que no use datos de cache
-  redirect('/dashboard/invoices')
+  revalidatePath('/dashboard/transactions') //revalidar para que no use datos de cache
+  redirect('/dashboard/transactions')
 }
 
 export async function updateMovement(id: string, formData: FormData) {
@@ -76,8 +76,8 @@ export async function updateMovement(id: string, formData: FormData) {
     return { message: 'Database Error: Failed to Update Invoice.' }
   }
 
-  revalidatePath('/dashboard/invoices')
-  redirect('/dashboard/invoices')
+  revalidatePath('/dashboard/transactions')
+  redirect('/dashboard/transactions')
 }
 
 export async function deleteMovement(id: string) {
@@ -87,7 +87,7 @@ export async function deleteMovement(id: string) {
     console.log(error)
     return { message: 'Database Error: Failed to Delete Invoice.' }
   }
-  revalidatePath('/dashboard/invoices')
+  revalidatePath('/dashboard/transactions')
 }
 
 export async function authenticate(
@@ -192,7 +192,7 @@ export async function createTokenPrice(formData: FormData) {
     }
   }
   revalidatePath('/dashboard/funds') //revalidar para que no use datos de cache
-  // redirect('/dashboard/invoices')
+  // redirect('/dashboard/transactions')
 }
 
 export async function deletePriceWithId(id: string) {

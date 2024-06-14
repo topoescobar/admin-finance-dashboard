@@ -40,7 +40,7 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestTransactions() {
   unstable_noStore()
   try {
     const data = await sql<LatestInvoiceRaw>`
@@ -50,11 +50,11 @@ export async function fetchLatestInvoices() {
       ORDER BY invoices.date DESC
       LIMIT 5`
 
-    const latestInvoices = data.rows.map((invoice) => ({
+    const LatestTransactions = data.rows.map((invoice) => ({
       ...invoice,
       amount: formatCurrency(invoice.amount),
     }))
-    return latestInvoices
+    return LatestTransactions
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch the latest invoices.')
