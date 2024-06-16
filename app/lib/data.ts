@@ -207,10 +207,10 @@ export async function fetchFilteredCustomers(query: string) {
 		  customers.email,
 		  customers.image_url,
 		  COUNT(transactions.id) AS total_transactions,
-		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.amount ELSE 0 END) AS total_paid
+		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
+		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.tokens ELSE 0 END) AS total_tokens
 		FROM customers
-		LEFT JOIN transactions ON customers.id = transactions.customer_id
+		LEFT JOIN transactions ON customers.id = transactions.customerid
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`}
@@ -220,8 +220,8 @@ export async function fetchFilteredCustomers(query: string) {
 
     const customers = data.rows.map((customer) => ({
       ...customer,
-      total_pending: formatCurrency(customer.total_pending),
-      total_paid: formatCurrency(customer.total_paid),
+      total_pending: formatCurrency(customer.total_pending), //valor en usd a incorporar
+      total_tokens: formatCurrency(customer.total_tokens),
     }))
 
     return customers

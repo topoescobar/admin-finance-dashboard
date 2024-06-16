@@ -65,6 +65,7 @@ export type CustomersTableType = {
   total_transactions: number;
   total_pending: number;
   total_paid: number;
+  total_tokens: number;
 };
 
 export type FormattedCustomersTable = {
@@ -74,7 +75,7 @@ export type FormattedCustomersTable = {
   image_url: string;
   total_transactions: number;
   total_pending: string;
-  total_paid: string;
+  total_tokens: string;
 };
 
 export type CustomerField = {
