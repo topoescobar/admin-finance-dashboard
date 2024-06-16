@@ -2,7 +2,6 @@ import CardWrapper, { Card } from '@/app/ui/dashboard/cards'
 import RevenueChart from '@/app/ui/dashboard/revenue-chart'
 import LatestTransactions from '@/app/ui/dashboard/latest-transactions'
 import { lusitana } from '@/app/ui/fonts'
-import { fetchCardData } from '../../lib/data'
 import { Suspense } from 'react' //defer rendering parts until some condition is met (e.g. data is loaded)
 import { CardsSkeleton, LatestTransactionsSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons'
 

@@ -1,16 +1,16 @@
-import Form from '@/app/ui/movements/edit-form'
-import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
-import { fetchCustomers, fetchMovementById } from '@/app/lib/data'
+import Form from '@/app/ui/transactions/edit-form'
+import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
+import { fetchCustomers, fetchTransactionById } from '@/app/lib/data'
 import { notFound } from 'next/navigation'
 
-export default async function EditMovement({ params }: { params: { id: string }} ) {
+export default async function EditTransaction({ params }: { params: { id: string }} ) {
   const { id } = params
-  const [movement, customers] = await Promise.all([
-    fetchMovementById(id),
+  const [transaction, customers] = await Promise.all([
+    fetchTransactionById(id),
     fetchCustomers(),
   ])
 
-  if (!movement) {
+  if (!transaction) {
     notFound()
   }
 
@@ -18,15 +18,15 @@ export default async function EditMovement({ params }: { params: { id: string }}
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Movements', href: '/dashboard/transactions' },
+          { label: 'Transactions', href: '/dashboard/transactions' },
           {
-            label: 'Edit movement',
+            label: 'Edit Transaction',
             href: `/dashboard/transactions/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <Form invoice={movement} customers={customers} />
+      <Form transaction={transaction} customers={customers} />
     </main>
   )
 }

@@ -1,5 +1,5 @@
 import CreateCustomerForm from '@/app/ui/customers/create-form'
-import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
+import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 
 export default function CreateCustomer() {
   return (

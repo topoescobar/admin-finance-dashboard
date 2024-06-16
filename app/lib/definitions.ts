@@ -16,11 +16,13 @@ export type Customer = {
   image_url: string;
 };
 
-export type Invoice = {
+export type Transaction = {
   id: string;
   customer_id: string;
-  amount: number;
-  date: string;
+  value: number;
+  tokens: number;
+  vault: string;
+  date: Date;
   // In TypeScript, this is called a string union type.
   // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
@@ -31,7 +33,7 @@ export type Revenue = {
   revenue: number;
 };
 
-export type LatestInvoice = {
+export type LatestTransaction = {
   id: string;
   name: string;
   image_url: string;
@@ -40,22 +42,11 @@ export type LatestInvoice = {
 };
 
 // The database returns a number for amount, but we later format it to a string with the formatCurrency function
-export type LatestInvoiceRaw = Omit<LatestInvoice, 'amount'> & {
+export type LatestTransactionRaw = Omit<LatestTransaction, 'amount'> & {
   amount: number;
 };
 
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type MovementsTable = {
+export type TransactionsTable = {
   id: string
   customer_id: string
   name: string
@@ -71,7 +62,7 @@ export type CustomersTableType = {
   name: string;
   email: string;
   image_url: string;
-  total_invoices: number;
+  total_transactions: number;
   total_pending: number;
   total_paid: number;
 };
@@ -81,7 +72,7 @@ export type FormattedCustomersTable = {
   name: string;
   email: string;
   image_url: string;
-  total_invoices: number;
+  total_transactions: number;
   total_pending: string;
   total_paid: string;
 };
@@ -91,14 +82,7 @@ export type CustomerField = {
   name: string;
 };
 
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type MovementForm = {
+export type TransactionForm = {
   id: string
   customer_id: string
   value: number

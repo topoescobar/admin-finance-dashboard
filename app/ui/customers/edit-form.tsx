@@ -1,6 +1,6 @@
 'use client'
 
-import { Customer, CustomerField, InvoiceForm, MovementForm } from '@/app/lib/definitions'
+import { Customer, CustomerField, TransactionForm, TransactionForm } from '@/app/lib/definitions'
 import {
   AtSymbolIcon,
   CalendarIcon,
@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Button } from '@/app/ui/button'
-import { updateCustomer, updateMovement } from '@/app/lib/actions'
+import { updateCustomer, updateTransaction } from '@/app/lib/actions'
 
 export default function EditCustomerForm({ customer, customers, }:
   { customer: Customer, customers: CustomerField[] }) {

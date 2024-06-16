@@ -10,24 +10,24 @@ import bcrypt from 'bcrypt'
 //todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
-const MovementSchema = z.object({
+const TransactionSchema = z.object({
   id: z.string(),
   customerId: z.string(),
   value: z.coerce.number(),
   tokens: z.coerce.number(),
   vault: z.string(),
   status: z.enum(['pending', 'paid']),
-  date: z.string(),
+  date: z.date(),
 }) 
 
-const RegisterSchema = z.object({ //user
+const UserSchema = z.object({ 
   email: z.string().email(),
   password: z.string().min(6),
   username: z.string().min(4),
   customerId: z.string().optional(), 
 })
 
-const UserSchema = z.object({ //customer
+const CustomerSchema = z.object({
   id: z.string(),
   name: z.string().min(4),
   email: z.string().email().optional(),
@@ -41,52 +41,53 @@ const tokenPriceSchema = z.object({
 }) 
 
 //omitir id que no viene en form
-const FormMovementSchema = MovementSchema.omit({ id: true })
-const FormUserSchema = UserSchema.omit({ id: true })
-export async function createMovement(formData: FormData) {
-
+const FormTransactionSchema = TransactionSchema.omit({ id: true })
+const FormCustomerSchema = CustomerSchema.omit({ id: true })
+export async function createTransaction(formData: FormData) {
+  
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const { customerId, value, tokens, vault, status, date } = FormMovementSchema.parse(allFormData) //data validadada
-  // const date = new Date().toISOString().split('T')[0] //agregar hora automatico, el 2do elemento es la hora
-
+  const { customerId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allFormData) //data validadada
+  //formatear fecha, el 2do elemento del split es la hora. en la base de datos formato (mm/dd/yyyy)
+  const dateFormatted = new Date(date).toISOString().split('T')[0] 
   try {
     //subir a DB
     await sql
-      `INSERT INTO movements (customer_id, value, tokens, status, date, vault)
-      VALUES (${customerId}, ${value}, ${tokens}, ${status}, ${date}, ${vault})`
+      `INSERT INTO transactions (customerid, value, tokens, vault, status, date) 
+      VALUES (${customerId}, ${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted})` 
   } catch (error) {
     console.log(error)
     return {
-      message: 'Database Error: Failed to Create Invoice.',
+      message: 'Database Error: Failed to Create Transaction.',
     }
   }
   revalidatePath('/dashboard/transactions') //revalidar para que no use datos de cache
   redirect('/dashboard/transactions')
 }
 
-export async function updateMovement(id: string, formData: FormData) {
+export async function updateTransaction(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { customerId, value, tokens, status, date } = FormMovementSchema.parse(allUpdateData)  
-  
+  const { customerId, value, tokens, status, date } = FormTransactionSchema.parse(allUpdateData)  
+  const dateFormatted = new Date(date).toISOString().split('T')[0]
+
   try {
     await sql`
-      UPDATE movements
-      SET customer_id = ${customerId}, value = ${value}, tokens = ${tokens}, status = ${status}, date = ${date}
+      UPDATE transactions
+      SET customer_id = ${customerId}, value = ${value}, tokens = ${tokens}, status = ${status}, date = ${dateFormatted}
       WHERE id = ${id} `
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' }
+    return { message: 'Database Error: Failed to Update Transaction.' }
   }
 
   revalidatePath('/dashboard/transactions')
   redirect('/dashboard/transactions')
 }
 
-export async function deleteMovement(id: string) {
+export async function deleteTransaction(id: string) {
   try {
-    await sql`DELETE FROM movements WHERE id = ${id}`
+    await sql`DELETE FROM transactions WHERE id = ${id}`
   } catch (error) {
     console.log(error)
-    return { message: 'Database Error: Failed to Delete Invoice.' }
+    return { message: 'Database Error: Failed to Delete Transaction.' }
   }
   revalidatePath('/dashboard/transactions')
 }
@@ -112,7 +113,7 @@ export async function authenticate(
 
 export async function register(formData: FormData) {
   const allData = Object.fromEntries(formData)
-  const { email, username, password } = RegisterSchema.parse(allData)
+  const { email, username, password } = UserSchema.parse(allData)
   const hashedPassword = await bcrypt.hash(password, 10)
 
   try {
@@ -132,7 +133,7 @@ export async function createCustomer(formData: FormData) {
     image_url: formData.get('image_url') ,
   }
 
-  const { name, email, image_url } = FormUserSchema.parse(rawData) //data validadada
+  const { name, email, image_url } = FormCustomerSchema.parse(rawData) //data validadada
   
   try {
     //subir a DB
@@ -161,7 +162,7 @@ export async function deleteCustomer(id: string) {
 
 export async function updateCustomer(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { name, email, image_url } = FormUserSchema.parse(allUpdateData)
+  const { name, email, image_url } = FormCustomerSchema.parse(allUpdateData)
 
   try {
     await sql`

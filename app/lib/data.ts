@@ -2,13 +2,11 @@ import { sql } from '@vercel/postgres'
 import {
   CustomerField,
   CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  MovementsTable,
-  LatestInvoiceRaw,
+  TransactionForm,
+  TransactionsTable,
+  LatestTransactionRaw,
   User,
   Revenue,
-  MovementForm,
   Customer,
   TokenPriceTable,
 } from './definitions'
@@ -43,194 +41,141 @@ export async function fetchRevenue() {
 export async function fetchLatestTransactions() {
   unstable_noStore()
   try {
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
+    const data = await sql<LatestTransactionRaw>`
+      SELECT transactions.amount, customers.name, customers.image_url, customers.email, transactions.id
+      FROM transactions
+      JOIN customers ON transactions.customer_id = customers.id
+      ORDER BY transactions.date DESC
       LIMIT 5`
 
-    const LatestTransactions = data.rows.map((invoice) => ({
-      ...invoice,
-      amount: formatCurrency(invoice.amount),
+    const LatestTransactions = data.rows.map((transaction) => ({
+      ...transaction,
+      amount: formatCurrency(transaction.amount),
     }))
     return LatestTransactions
   } catch (error) {
     console.error('Database Error:', error)
-    throw new Error('Failed to fetch the latest invoices.')
+    throw new Error('Failed to fetch the latest transactions.')
   }
 }
 
-export async function fetchCardData() {
+/*
+ export async function fetchCardData() {
   unstable_noStore()
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`
+    const transactionCountPromise = sql`SELECT COUNT(*) FROM transactions`
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`
-    const invoiceStatusPromise = sql`SELECT
+    const transactionStatusPromise = sql`SELECT
          SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
          SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`
+         FROM transactions`
 
     const data = await Promise.all([ // initiate all promises at the same time, otherwise they start in a cascade.
-      invoiceCountPromise,
+      transactionCountPromise,
       customerCountPromise,
-      invoiceStatusPromise,
+      transactionStatusPromise,
     ])
 
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0')
+    const numberOftransactions = Number(data[0].rows[0].count ?? '0')
     const numberOfCustomers = Number(data[1].rows[0].count ?? '0')
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0')
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0')
+    const totalPaidtransactions = formatCurrency(data[2].rows[0].paid ?? '0')
+    const totalPendingTransactions = formatCurrency(data[2].rows[0].pending ?? '0')
 
     return {
       numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
+      numberOfTransactions,
+      totalPaidTransactions,
+      totalPendingTransactions,
     }
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch card data.')
   }
 }
-
+ */
 const ITEMS_PER_PAGE = 6
-export async function fetchFilteredInvoices( query: string, currentPage: number,) {
+
+export async function fetchFilteredTransactions(query: string, currentPage: number,) {
   unstable_noStore()
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
   try {
-    const invoices = await sql<InvoicesTable>`
+    const transactions = await sql`
       SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
+        transactions.id,
+        transactions.value,
+        transactions.tokens,
+        transactions.vault,
+        transactions.date,
+        transactions.status,
         customers.name,
-        customers.email,
         customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
+      FROM transactions
+      JOIN customers ON transactions.customerid = customers.id
       WHERE
         customers.name ILIKE ${`%${query}%`} OR
         customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
+        transactions.vault ILIKE ${`%${query}%`} OR
+        transactions.value::text ILIKE ${`%${query}%`} OR
+        transactions.date::text ILIKE ${`%${query}%`} OR
+        transactions.status ILIKE ${`%${query}%`}
+      ORDER BY transactions.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `
-    return invoices.rows
+    return transactions.rows
   } catch (error) {
     console.error('Database Error:', error)
-    throw new Error('Failed to fetch invoices.')
+    throw new Error('Failed to fetch transactions.')
   }
 }
 
-export async function fetchFilteredMovements(query: string, currentPage: number,) {
+export async function fetchTransactionById(id: string) {
   unstable_noStore()
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE
   try {
-    const movements = await sql`
+    const data = await sql<TransactionForm>`
       SELECT
-        movements.id,
-        movements.value,
-        movements.tokens,
-        movements.vault,
-        movements.date,
-        movements.status,
-        customers.name,
-        customers.image_url
-      FROM movements
-      JOIN customers ON movements.customer_id = customers.id
-      WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        movements.vault ILIKE ${`%${query}%`} OR
-        movements.value::text ILIKE ${`%${query}%`} OR
-        movements.date::text ILIKE ${`%${query}%`} OR
-        movements.status ILIKE ${`%${query}%`}
-      ORDER BY movements.date DESC
-      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+        transactions.id,
+        transactions.customer_id,
+        transactions.value,
+        transactions.tokens,
+        transactions.status,
+        transactions.date
+      FROM transactions
+      WHERE transactions.id = ${id};
     `
-    return movements.rows
-  } catch (error) {
-    console.error('Database Error:', error)
-    throw new Error('Failed to fetch movements.')
-  }
-}
-
-export async function fetchInvoicesPages(query: string) {
-  unstable_noStore()
-  try {
-    const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
-    WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
-  `
-    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE)
-    return totalPages
-  } catch (error) {
-    console.error('Database Error:', error)
-    throw new Error('Failed to fetch total number of invoices.')
-  }
-}
-
-export async function fetchMovementById(id: string) {
-  unstable_noStore()
-  try {
-    const data = await sql<MovementForm>`
-      SELECT
-        movements.id,
-        movements.customer_id,
-        movements.value,
-        movements.tokens,
-        movements.status,
-        movements.date
-      FROM movements
-      WHERE movements.id = ${id};
-    `
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
+    const transaction = data.rows.map((transaction) => ({
+      ...transaction,
       // Convert amount from cents to dollars
-      amount: invoice.value / 100,
+      amount: transaction.value / 100,
     }))
-    console.log("invoice", invoice)
+    console.log("transaction", transaction)
     console.log("data", data)
     
-    return invoice[0]
+    return transaction[0]
   } catch (error) {
     console.error('Database Error:', error)
-    throw new Error('Failed to fetch invoice.')
+    throw new Error('Failed to fetch transaction.')
   }
 }
 
-export async function fetchMovementsPages(query: string) {
+export async function fetchTransactionsPages(query: string) {
   unstable_noStore()
   try {
     const count = await sql`SELECT COUNT(*)
-    FROM movements
-    JOIN customers ON movements.customer_id = customers.id
+    FROM transactions
+    JOIN customers ON transactions.customerid = customers.id
     WHERE
       customers.name ILIKE ${`%${query}%`} OR
       customers.email ILIKE ${`%${query}%`} OR
-      movements.value::text ILIKE ${`%${query}%`} OR
-      movements.tokens::text ILIKE ${`%${query}%`} OR
-      movements.date::text ILIKE ${`%${query}%`} OR
-      movements.status ILIKE ${`%${query}%`}
+      transactions.value::text ILIKE ${`%${query}%`} OR
+      transactions.tokens::text ILIKE ${`%${query}%`} OR
+      transactions.date::text ILIKE ${`%${query}%`} OR
+      transactions.status ILIKE ${`%${query}%`}
   `
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE)
     return totalPages
   } catch (error) {
     console.error('Database Error:', error)
-    throw new Error('Failed to fetch total number of invoices.')
+    throw new Error('Failed to fetch total number of transactions.')
   }
 }
 
@@ -253,7 +198,7 @@ export async function fetchCustomers() {
 }
 
 export async function fetchFilteredCustomers(query: string) {
-  unstable_noStore()
+  //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
   try {
     const data = await sql<CustomersTableType>`
 		SELECT
@@ -261,14 +206,14 @@ export async function fetchFilteredCustomers(query: string) {
 		  customers.name,
 		  customers.email,
 		  customers.image_url,
-		  COUNT(invoices.id) AS total_invoices,
-		  SUM(CASE WHEN invoices.status = 'pending' THEN invoices.amount ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN invoices.status = 'paid' THEN invoices.amount ELSE 0 END) AS total_paid
+		  COUNT(transactions.id) AS total_transactions,
+		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.amount ELSE 0 END) AS total_pending,
+		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.amount ELSE 0 END) AS total_paid
 		FROM customers
-		LEFT JOIN invoices ON customers.id = invoices.customer_id
+		LEFT JOIN transactions ON customers.id = transactions.customer_id
 		WHERE
 		  customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`}
+      customers.email ILIKE ${`%${query}%`}
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `

@@ -5,7 +5,7 @@ import {
   CustomersTableType,
   FormattedCustomersTable,
 } from '@/app/lib/definitions';
-import { CreateCustomer, DeleteCustomer, UpdateCustomer } from '../movements/buttons'
+import { CreateCustomer, DeleteCustomer, UpdateCustomer } from '../transactions/buttons'
 
 export default function CustomersTable({ customers,}: { customers: FormattedCustomersTable[];
 }) {
@@ -60,7 +60,7 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
                       </div>
                     </div>
                     <div className="pt-4 text-sm">
-                      <p>{customer.total_invoices} invoices</p>
+                      <p>{customer.total_transactions} Transactions</p>
                     </div>
                   </div>
                 ))}
@@ -110,7 +110,7 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
                         {customer.email}
                       </td>
                       <td className="whitespace-nowrap px-4 py-5 text-sm">
-                        {customer.total_invoices}
+                        {customer.total_transactions}
                       </td>
                       <td className="whitespace-nowrap px-4 py-5 text-sm">
                         {customer.total_pending}

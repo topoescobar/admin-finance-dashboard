@@ -6,7 +6,7 @@ import {
 import './styles/funds.css'
 import { Button } from '../button'
 import { createTokenPrice } from '@/app/lib/actions'
-import { DeleteInvoice, DeletePrice } from '../movements/buttons'
+import { DeleteTransaction, DeletePrice } from '../transactions/buttons'
 import { TokenPriceTable } from '@/app/lib/definitions'
 
 export default async function FcaTable({tokenPrices}: {tokenPrices: TokenPriceTable[]}) {

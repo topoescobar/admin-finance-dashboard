@@ -1,6 +1,6 @@
 import { fetchCustomerById, fetchCustomers } from '@/app/lib/data'
 import EditCustomerForm from '@/app/ui/customers/edit-form'
-import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
+import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 
 export default async function EditCustomer({ params }: { params: { id: string } }) {
   const { id } = params

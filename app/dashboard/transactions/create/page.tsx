@@ -1,8 +1,8 @@
-import Form from '@/app/ui/movements/create-form'
-import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
+import Form from '@/app/ui/transactions/create-form'
+import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 import { fetchCustomers } from '@/app/lib/data'
 
-export default async function CreateInvoice() {
+export default async function CreateTransaction() {
   const customers = await fetchCustomers()
 
   return (
