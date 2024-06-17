@@ -9,7 +9,7 @@ export default async function EditTransaction({ params }: { params: { id: string
     fetchTransactionById(id),
     fetchCustomers(),
   ])
-
+  
   if (!transaction) {
     notFound()
   }

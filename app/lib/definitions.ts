@@ -85,9 +85,10 @@ export type CustomerField = {
 
 export type TransactionForm = {
   id: string
-  customer_id: string
+  customerid: string
   value: number
   tokens: number
+  vault: string
   status: 'pending' | 'paid'
   date: Date
 }

@@ -17,8 +17,8 @@ const TransactionSchema = z.object({
   tokens: z.coerce.number(),
   vault: z.string(),
   status: z.enum(['pending', 'paid']),
-  date: z.date(),
-}) 
+  date: z.string(),
+})
 
 const UserSchema = z.object({ 
   email: z.string().email(),
@@ -66,13 +66,13 @@ export async function createTransaction(formData: FormData) {
 
 export async function updateTransaction(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { customerId, value, tokens, status, date } = FormTransactionSchema.parse(allUpdateData)  
+  const { customerId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allUpdateData)  
   const dateFormatted = new Date(date).toISOString().split('T')[0]
 
   try {
     await sql`
       UPDATE transactions
-      SET customer_id = ${customerId}, value = ${value}, tokens = ${tokens}, status = ${status}, date = ${dateFormatted}
+      SET customerid = ${customerId}, value = ${value}, tokens = ${tokens}, vault = ${vault}, status = ${status}, date = ${dateFormatted}
       WHERE id = ${id} `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Transaction.' }

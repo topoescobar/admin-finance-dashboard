@@ -134,9 +134,10 @@ export async function fetchTransactionById(id: string) {
     const data = await sql<TransactionForm>`
       SELECT
         transactions.id,
-        transactions.customer_id,
+        transactions.customerid,
         transactions.value,
         transactions.tokens,
+        transactions.vault,
         transactions.status,
         transactions.date
       FROM transactions
@@ -180,6 +181,7 @@ export async function fetchTransactionsPages(query: string) {
 }
 
 export async function fetchCustomers() {
+  unstable_noStore()
   try {
     const data = await sql<CustomerField>`
       SELECT
