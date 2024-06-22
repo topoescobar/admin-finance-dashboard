@@ -108,7 +108,7 @@ export default function CustomersTable({ customers, }: {
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-gray-200 text-gray-100 dark:bg-slate-900">
+                <tbody className="divide-y divide-gray-200 text-gray-100 dark:bg-slate-400 dark:text-slate-800">
                   {customers.map((customer) => (
                     <tr key={customer.id} className="group">
                       <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
@@ -123,8 +123,13 @@ export default function CustomersTable({ customers, }: {
                           <p>{customer.name}</p>
                         </div>
                       </td>
-                      <td className="whitespace-nowrap px-4 py-5 text-sm">
+                      <td className="whitespace-nowrap px-4 py-5 text-sm emailContainerStyle"
+                        onClick={() => copyToClipboard(customer.email)}
+                        onMouseEnter={() => setShowTooltip(true)}
+                        onMouseLeave={() => setShowTooltip(false)}
+                      >
                         {customer.email}
+                        {showTooltip && <span className='tooltipStyle'>Copiar</span>}
                       </td>
                       <td className="whitespace-nowrap px-4 py-5 text-sm">
                         {customer.total_transactions}

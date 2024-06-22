@@ -223,7 +223,7 @@ export async function fetchFilteredCustomers(query: string) {
     const customers = data.rows.map((customer) => ({
       ...customer,
       total_pending: formatCurrency(customer.total_pending), //valor en usd a incorporar
-      total_tokens: formatCurrency(customer.total_tokens),
+      total_tokens: Number(customer.total_tokens),
     }))
 
     return customers
