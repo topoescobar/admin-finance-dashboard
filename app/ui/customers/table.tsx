@@ -1,14 +1,25 @@
-import Image from 'next/image';
-import { lusitana } from '@/app/ui/fonts';
-import Search from '@/app/ui/search';
+'use client'
+import Image from 'next/image'
+import { lusitana } from '@/app/ui/fonts'
+import Search from '@/app/ui/search'
 import {
   CustomersTableType,
   FormattedCustomersTable,
-} from '@/app/lib/definitions';
+} from '@/app/lib/definitions'
 import { CreateCustomer, DeleteCustomer, UpdateCustomer } from '../transactions/buttons'
+import { useState } from 'react'
+import './styles/customers.css'
 
-export default function CustomersTable({ customers,}: { customers: FormattedCustomersTable[];
+export default function CustomersTable({ customers, }: {
+  customers: FormattedCustomersTable[]
 }) {
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+  }
+
+  const [showTooltip, setShowTooltip] = useState(false)
+
   return (
     <div className="w-full">
       <h1 className={`${lusitana.className} mb-8 text-xl md:text-2xl`}>
@@ -28,7 +39,7 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
                 {customers?.map((customer) => (
                   <div
                     key={customer.id}
-                    className="mb-2 w-full rounded-md bg-white p-4"
+                    className="mb-2 w-full rounded-md bg-white p-4 dark:bg-indigo-200 dark:text-indigo-800"
                   >
                     <div className="flex items-center justify-between border-b pb-4">
                       <div>
@@ -36,7 +47,7 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
                           <div className="flex items-center gap-3">
                             <Image
                               src={customer.image_url.trim() === '' ? '/customers/noavatar.png' : customer.image_url}
-                              className="rounded-full"
+                              className="rounded-full "
                               alt={`${customer.name}'s profile picture`}
                               width={28}
                               height={28}
@@ -44,9 +55,15 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
                             <p>{customer.name}</p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500">
-                          {customer.email}
-                        </p>
+                        <div className='emailContainerStyle'
+                          onClick={() => copyToClipboard(customer.email)}
+                          onMouseEnter={() => setShowTooltip(true)}
+                          onMouseLeave={() => setShowTooltip(false)} >
+                          <p className="text-sm text-gray-500 emailContainerStyle" >
+                            {customer.email}
+                          {showTooltip && <span className='tooltipStyle'>Copiar</span>}
+                          </p>
+                        </div>
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
@@ -133,5 +150,5 @@ export default function CustomersTable({ customers,}: { customers: FormattedCust
         </div>
       </div>
     </div>
-  );
+  )
 }
