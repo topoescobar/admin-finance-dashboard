@@ -117,7 +117,7 @@ export async function register(formData: FormData) {
   const hashedPassword = await bcrypt.hash(password, 10)
 
   try {
-    await sql `INSERT INTO users (email, name, password) VALUES (${email}, ${username}, ${hashedPassword})`
+    await sql `INSERT INTO users (email, username, password) VALUES (${email}, ${username}, ${hashedPassword})`
   } catch (error) {
     console.log(error)
   }

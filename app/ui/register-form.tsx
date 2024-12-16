@@ -12,7 +12,7 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { authenticate, register } from '@/app/lib/actions'
 
 export default function RegisterForm() {
-  // const [errorMessage, dispatch] = useFormState(authenticate, undefined)
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined)
 
   return (
     <form action={register} className="space-y-3">

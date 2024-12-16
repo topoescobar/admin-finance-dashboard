@@ -13,7 +13,11 @@ CREATE TABLE Customers (
     id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
-    image_url TEXT
+    image_url TEXT,
+    user_id UUID,
+    CONSTRAINT fk_users
+      FOREIGN KEY(user_id) 
+      REFERENCES Users(id)
 );
 
 CREATE TABLE Users (
@@ -21,10 +25,6 @@ CREATE TABLE Users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     username VARCHAR(255) NOT NULL,
-    customerId UUID, 
-    CONSTRAINT fk_customer
-      FOREIGN KEY(customerId) 
-      REFERENCES Customers(id)
 );
 
 CREATE TABLE Transactions (
