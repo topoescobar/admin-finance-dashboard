@@ -1,6 +1,6 @@
 'use client'
 
-import { Customer, CustomerField, TransactionForm, TransactionForm } from '@/app/lib/definitions'
+import { Customer, CustomerField, TransactionForm } from '@/app/lib/definitions'
 import {
   AtSymbolIcon,
   CalendarIcon,
