@@ -1,6 +1,6 @@
 import Pagination from '@/app/ui/transactions/pagination'
 import Search from '@/app/ui/search'
-import Table from '@/app/ui/transactions/table'
+import TransactionsTable from '@/app/ui/transactions/transactions-table'
 import { CreateTransaction } from '@/app/ui/transactions/buttons'
 import { lusitana } from '@/app/ui/fonts'
 import { TransactionsTableSkeleton } from '@/app/ui/skeletons'
@@ -24,10 +24,12 @@ export default async function TransactionsPage({ searchParams, }:
         <Search placeholder="Buscar..." />
         <CreateTransaction />
       </div>
+
       {/* suspense solo se ejecuta una vez por defecto, se le agrega el key para forzar la renderización del fallback cada vez que hace el fetching */}
       <Suspense key={query + currentPage} fallback={<TransactionsTableSkeleton />}> 
-        <Table query={query} currentPage={currentPage} />
+        <TransactionsTable query={query} currentPage={currentPage} />
       </Suspense>
+      
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
       </div>

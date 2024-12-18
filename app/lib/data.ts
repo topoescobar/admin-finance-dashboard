@@ -96,7 +96,7 @@ export async function fetchLatestTransactions() {
 const ITEMS_PER_PAGE = 6
 
 export async function fetchFilteredTransactions(query: string, currentPage: number,) {
-  unstable_noStore()
+  //unstable_noStore()
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
   try {
     const transactions = await sql`
@@ -122,6 +122,7 @@ export async function fetchFilteredTransactions(query: string, currentPage: numb
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `
     return transactions.rows
+    
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch transactions.')
@@ -202,7 +203,7 @@ export async function fetchCustomers() {
 export async function fetchFilteredCustomers(query: string) {
   //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
   try {
-    const data = await sql<CustomersTableType>`
+    const data = await sql `
 		SELECT
 		  customers.id,
 		  customers.name,
@@ -219,14 +220,15 @@ export async function fetchFilteredCustomers(query: string) {
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `
-
-    const customers = data.rows.map((customer) => ({
+ /*    const customers = data.rows.map((customer) => ({
       ...customer,
       total_pending: Number(customer.total_pending), //valor en usd a incorporar
       total_tokens: Number(customer.total_tokens),
-    }))
+    })) */
 
-    return customers
+      console.log(data.rows)
+      return data.rows
+    
   } catch (err) {
     console.error('Database Error:', err)
     throw new Error('Failed to fetch customer table.')

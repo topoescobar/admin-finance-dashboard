@@ -66,8 +66,7 @@ export type CustomersTableType = {
   total_paid: number;
   total_tokens: number;
 };
-
-export type FormattedCustomersTable = {
+export type FormattedCustomersTable = { //revisar ya no seria necesaria
   id: string;
   name: string;
   email: string;

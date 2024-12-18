@@ -4,15 +4,18 @@ import TransactionStatus from '@/app/ui/transactions/status'
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils'
 import { fetchFilteredTransactions } from '@/app/lib/data'
 import './styles/transactions.css'
-export default async function TransactionsTable({ query, currentPage, }:{ query: string; currentPage: number }) {
 
-  // const inoices = await fetchFilteredTransactions(query, currentPage)
+export default async function TransactionsTable({ query, currentPage, }:
+  { query: string; currentPage: number }) {
+
   const Transactions = await fetchFilteredTransactions(query, currentPage)
 
   return (
+
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0 dark:bg-slate-800 dark:text-white">
+          
           {/* MOBILE */}
           <div className="md:hidden">
             {Transactions?.map((tx) => (
@@ -61,6 +64,7 @@ export default async function TransactionsTable({ query, currentPage, }:{ query:
                 <th scope="col" className="relative py-3 pl-6 pr-3"> <span className="sr-only">Actions</span> </th>
               </tr>
             </thead>
+
             <tbody className="bg-white dark:bg-slate-700">
               {Transactions?.map((tx) => (
                 <tr
