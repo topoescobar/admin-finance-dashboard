@@ -1,6 +1,7 @@
-import { fetchCustomerById, fetchCustomers } from '@/app/lib/data'
 import EditCustomerForm from '@/app/ui/customers/edit-form'
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
+import { fetchCustomerById, fetchCustomers } from '@/app/lib/data'
+import { notFound } from 'next/navigation'
 
 export default async function EditCustomer({ params }: { params: { id: string } }) {
   const { id } = params
@@ -14,7 +15,7 @@ export default async function EditCustomer({ params }: { params: { id: string } 
           { label: 'Clientes', href: '/dashboard/customers' },
           {
             label: 'Editar',
-            href: '/dashboard/customers/[id]/edit',
+            href: `dashboard/customers/${id}/edit`,
             active: true,
           },
         ]}
