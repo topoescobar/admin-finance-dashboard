@@ -80,5 +80,5 @@ export default function CreateCustomerForm() {
         <Button type="submit">Crear</Button>
       </div>
     </form>
-  )
-}
+  ) 
+} 

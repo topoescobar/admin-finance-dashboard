@@ -1,4 +1,4 @@
-import { deleteCustomer } from '@/app/lib/actions'
+import { deleteUser } from '@/app/lib/actions'
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
@@ -24,7 +24,7 @@ export function UpdateCustomer({ id }: { id: string }) {
 }
 
 export function DeleteCustomer({ id }: { id: string }) {
-  const deleteWithId = deleteCustomer.bind(null, id)
+  const deleteWithId = deleteUser.bind(null, id)
   return (
     <>
       <form action={deleteWithId}>

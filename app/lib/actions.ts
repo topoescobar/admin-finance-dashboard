@@ -24,15 +24,10 @@ const UserSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
   username: z.string().min(4),
-  customerId: z.string().optional(), 
+  image_url: z.string().optional(),
 })
 
-/* const CustomerSchema = z.object({
-  id: z.string(),
-  name: z.string().min(4),
-  email: z.string().email().optional(),
-  image_url: z.string().optional(),
-}) */
+const EditUserSchema = UserSchema.omit({ password: true })
 
 const tokenPriceSchema = z.object({
   price: z.coerce.number(),
@@ -124,8 +119,8 @@ export async function register(formData: FormData) {
   redirect('/login')
 }
 
-/*  YA NO SE USA, FUNCIONALIDAD CENTRADA EN USUARIO Y CLIENTE FUSIONADO
-export async function createCustomer(formData: FormData) {
+//YA NO SE USA, FUNCIONALIDAD CENTRADA EN USUARIO Y CLIENTE FUSIONADO
+/* export async function createCustomer(formData: FormData) {
 
   const rawData = {
     name: formData.get('name'),
@@ -149,25 +144,17 @@ export async function createCustomer(formData: FormData) {
   revalidatePath('/dashboard/customers') //revalidar para que no use datos de cache
   redirect('/dashboard/customers')
 }
+  */
 
-export async function deleteCustomer(id: string) {
-  try {
-    await sql`DELETE FROM customers WHERE id = ${id}`
-  } catch (error) {
-    console.log(error)
-    return { message: 'Database Error: Failed to Delete customer.' }
-  }
-  revalidatePath('/dashboard/customers')
-}
-
-export async function updateCustomer(id: string, formData: FormData) {
+export async function updateUser(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { name, email, image_url } = FormCustomerSchema.parse(allUpdateData)
-
+  const { username, email, image_url } = EditUserSchema.parse(allUpdateData)
+  
+  console.log('allUpdateData', allUpdateData)
   try {
     await sql`
-      UPDATE customers
-      SET name = ${name}, email = ${email}, image_url = ${image_url}
+      UPDATE users
+      SET username = ${username}, email = ${email}, image_url = ${image_url}
       WHERE id = ${id} `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Customer.' }
@@ -176,7 +163,16 @@ export async function updateCustomer(id: string, formData: FormData) {
   revalidatePath('/dashboard/customers')
   redirect('/dashboard/customers')
 }
- */
+
+export async function deleteUser(id: string) {
+  try {
+    await sql`DELETE FROM users WHERE id = ${id}`
+  } catch (error) {
+    console.log(error)
+    return { message: 'Database Error: Failed to Delete user.' }
+  }
+  revalidatePath('/dashboard/customers')
+}
 
 export async function createTokenPrice(formData: FormData) {
 

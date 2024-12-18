@@ -6,7 +6,6 @@ import {
   LatestTransactionRaw,
   User,
   Revenue,
-  Customer,
   TokenPriceTable,
   UserField,
 } from './definitions'
@@ -59,7 +58,7 @@ export async function fetchLatestTransactions() {
   }
 }
 
-/*
+/* fetchCardData
  export async function fetchCardData() {
   unstable_noStore()
   try {
@@ -93,6 +92,7 @@ export async function fetchLatestTransactions() {
   }
 }
  */
+
 const ITEMS_PER_PAGE = 6
 
 export async function fetchFilteredTransactions(query: string, currentPage: number,) {
@@ -197,6 +197,41 @@ export async function fetchUsers() {
   }
 }
 
+export async function fetchFilteredUsers(query: string) {
+  //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
+  try {
+    const data = await sql`
+		SELECT
+		  users.id,
+		  users.username,
+		  users.email,
+		  users.image_url,
+		  COUNT(transactions.id) AS total_transactions,
+		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
+		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.tokens ELSE 0 END) AS total_tokens
+		FROM users
+    LEFT JOIN transactions ON users.id = transactions.userid
+		WHERE
+		  users.username ILIKE ${`%${query}%`} OR
+      users.email ILIKE ${`%${query}%`}
+		GROUP BY users.id, users.username, users.email, users.image_url 
+		ORDER BY users.username ASC
+	  `// Todos los campos usados en SELECT deben estar en el GROUP BY
+
+    /*    const customers = data.rows.map((customer) => ({
+         ...customer,
+         total_pending: Number(customer.total_pending), //valor en usd a incorporar
+         total_tokens: Number(customer.total_tokens),
+       })) */
+
+    return data.rows
+
+  } catch (err) {
+    console.error('Database Error:', err)
+    throw new Error('Failed to fetch customer table.')
+  }
+}
+
 export async function fetchFilteredCustomers(query: string) {
   //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
   try {
@@ -223,7 +258,6 @@ export async function fetchFilteredCustomers(query: string) {
       total_tokens: Number(customer.total_tokens),
     })) */
 
-      console.log(data.rows)
       return data.rows
     
   } catch (err) {
@@ -242,17 +276,17 @@ export async function getUser(email: string) {
   }
 }
 
-export async function fetchCustomerById(id: string) {
+export async function fetchUserById(id: string) {
   unstable_noStore()
   try {
-    const data = await sql<Customer>`
+    const data = await sql<User>`
       SELECT
-        customers.id,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM customers
-      WHERE customers.id = ${id};
+        users.id,
+        users.username,
+        users.email,
+        users.image_url
+      FROM users
+      WHERE users.id = ${id};
     `
     console.log('data customer by id', data.rows[0])
     return data.rows[0]
