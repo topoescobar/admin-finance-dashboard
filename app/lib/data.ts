@@ -1,6 +1,5 @@
 import { sql } from '@vercel/postgres'
 import {
-  CustomerField,
   CustomersTableType,
   TransactionForm,
   TransactionsTable,
@@ -9,6 +8,7 @@ import {
   Revenue,
   Customer,
   TokenPriceTable,
+  UserField,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -107,22 +107,22 @@ export async function fetchFilteredTransactions(query: string, currentPage: numb
         transactions.vault,
         transactions.date,
         transactions.status,
-        customers.name,
-        customers.image_url
+        users.username,
+        users.image_url
       FROM transactions
-      JOIN customers ON transactions.customerid = customers.id
+      JOIN users ON transactions.userid = users.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
+        users.username ILIKE ${`%${query}%`} OR
+        users.email ILIKE ${`%${query}%`} OR
         transactions.vault ILIKE ${`%${query}%`} OR
-        transactions.value::text ILIKE ${`%${query}%`} OR
         transactions.date::text ILIKE ${`%${query}%`} OR
         transactions.status ILIKE ${`%${query}%`}
       ORDER BY transactions.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `
+    console.log(transactions.rows)
     return transactions.rows
-    
+
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch transactions.')
@@ -164,12 +164,10 @@ export async function fetchTransactionsPages(query: string) {
   try {
     const count = await sql`SELECT COUNT(*)
     FROM transactions
-    JOIN customers ON transactions.customerid = customers.id
+    JOIN users ON transactions.userid = users.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      transactions.value::text ILIKE ${`%${query}%`} OR
-      transactions.tokens::text ILIKE ${`%${query}%`} OR
+      users.username ILIKE ${`%${query}%`} OR
+      users.email ILIKE ${`%${query}%`} OR
       transactions.date::text ILIKE ${`%${query}%`} OR
       transactions.status ILIKE ${`%${query}%`}
   `
@@ -181,22 +179,21 @@ export async function fetchTransactionsPages(query: string) {
   }
 }
 
-export async function fetchCustomers() {
+export async function fetchUsers() {
   unstable_noStore()
   try {
-    const data = await sql<CustomerField>`
+    const data = await sql<UserField>`
       SELECT
         id,
-        name
-      FROM customers
-      ORDER BY name ASC
+        username
+      FROM users
+      ORDER BY username ASC
     `
+    return data.rows
 
-    const customers = data.rows
-    return customers
   } catch (err) {
     console.error('Database Error:', err)
-    throw new Error('Failed to fetch all customers.')
+    throw new Error('Failed to fetch all users.')
   }
 }
 

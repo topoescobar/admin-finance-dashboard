@@ -76,9 +76,9 @@ export type FormattedCustomersTable = { //revisar ya no seria necesaria
   total_tokens: number;
 };
 
-export type CustomerField = {
+export type UserField = {
   id: string;
-  name: string;
+  username: string;
 };
 
 export type TransactionForm = {

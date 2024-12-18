@@ -24,12 +24,12 @@ export default async function TransactionsTable({ query, currentPage, }:
                   <div>
                     <div className="mb-2 flex items-center">
                       <Image
-                        src={tx.image_url.trim() == "" ? "/customers/noavatar.png" : tx.image_url}
+                        src={tx.image_url === null || tx.image_url.trim() === "" ? "/customers/noavatar.png" : tx.image_url}
                         className="mr-2 rounded-full"
                         width={28} height={28}
-                        alt={`${tx.name}'s profile picture`}
+                        alt={`${tx.username}'s profile picture`}
                       />
-                      <p>{tx.name}</p>
+                      <p>{tx.username}</p>
                     </div>
                     <p className="text-sm text-gray-500">{tx.email}</p>
                   </div>
@@ -74,11 +74,11 @@ export default async function TransactionsTable({ query, currentPage, }:
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
                       <Image className="mr-2 rounded-full profileImage"
-                        src={tx.image_url.trim() == "" ? "/customers/noavatar.png" : tx.image_url}
+                        src={tx.image_url === null || tx.image_url.trim() === "" ? "/customers/noavatar.png" : tx.image_url}
                         width={28} height={28}
-                        alt={`${tx.name}'s profile picture`}
+                        alt={`${tx.username}'s profile picture`}
                       />
-                      <p>{tx.name}</p>
+                      <p>{tx.username}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

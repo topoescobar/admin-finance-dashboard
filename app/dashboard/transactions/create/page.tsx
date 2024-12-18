@@ -1,23 +1,24 @@
 import Form from '@/app/ui/transactions/create-form'
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
-import { fetchCustomers } from '@/app/lib/data'
+import { fetchUsers } from '@/app/lib/data'
 
 export default async function CreateTransaction() {
-  const customers = await fetchCustomers()
+
+  const users = await fetchUsers()
 
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Movimientos', href: '/dashboard/transactions' },
+          { label: 'Transacciones', href: '/dashboard/transactions' },
           {
-            label: 'Crear nuevo',
+            label: 'Nueva',
             href: '/dashboard/transactions/create',
             active: true,
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form users={users} />
     </main>
   )
 }

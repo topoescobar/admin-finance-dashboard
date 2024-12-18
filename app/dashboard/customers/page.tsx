@@ -1,4 +1,3 @@
-import { fetchCustomers, fetchFilteredCustomers } from '@/app/lib/data'
 import { CreateCustomer } from '@/app/ui/customers/buttons'
 import CustomersTable from '@/app/ui/customers/table'
 import { lusitana } from '@/app/ui/fonts'

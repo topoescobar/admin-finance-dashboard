@@ -12,7 +12,7 @@ import bcrypt from 'bcrypt'
 //validacion usando zod
 const TransactionSchema = z.object({
   id: z.string(),
-  customerId: z.string(),
+  userId: z.string(),
   value: z.coerce.number(),
   tokens: z.coerce.number(),
   vault: z.string(),
@@ -27,12 +27,12 @@ const UserSchema = z.object({
   customerId: z.string().optional(), 
 })
 
-const CustomerSchema = z.object({
+/* const CustomerSchema = z.object({
   id: z.string(),
   name: z.string().min(4),
   email: z.string().email().optional(),
   image_url: z.string().optional(),
-})
+}) */
 
 const tokenPriceSchema = z.object({
   price: z.coerce.number(),
@@ -42,18 +42,17 @@ const tokenPriceSchema = z.object({
 
 //omitir id que no viene en form
 const FormTransactionSchema = TransactionSchema.omit({ id: true })
-const FormCustomerSchema = CustomerSchema.omit({ id: true })
+const FormCustomerSchema = UserSchema
 export async function createTransaction(formData: FormData) {
   
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const { customerId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allFormData) //data validadada
+  const { userId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allFormData) //data validadada
   //formatear fecha, el 2do elemento del split es la hora. en la base de datos formato (mm/dd/yyyy)
-  const dateFormatted = new Date(date).toISOString().split('T')[0] 
+  const dateFormatted = new Date(date).toISOString().split('T')[0]
   try {
-    //subir a DB
     await sql
-      `INSERT INTO transactions (customerid, value, tokens, vault, status, date) 
-      VALUES (${customerId}, ${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted})` 
+      `INSERT INTO transactions ( value, tokens, vault, status, date, userid)
+      VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId})` 
   } catch (error) {
     console.log(error)
     return {
@@ -66,13 +65,13 @@ export async function createTransaction(formData: FormData) {
 
 export async function updateTransaction(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { customerId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allUpdateData)  
+  const { userId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allUpdateData)  
   const dateFormatted = new Date(date).toISOString().split('T')[0]
 
   try {
     await sql`
       UPDATE transactions
-      SET customerid = ${customerId}, value = ${value}, tokens = ${tokens}, vault = ${vault}, status = ${status}, date = ${dateFormatted}
+      SET userid = ${userId}, value = ${value}, tokens = ${tokens}, vault = ${vault}, status = ${status}, date = ${dateFormatted}
       WHERE id = ${id} `
   } catch (error) {
     return { message: 'Database Error: Failed to Update Transaction.' }
@@ -125,6 +124,7 @@ export async function register(formData: FormData) {
   redirect('/login')
 }
 
+/*  YA NO SE USA, FUNCIONALIDAD CENTRADA EN USUARIO Y CLIENTE FUSIONADO
 export async function createCustomer(formData: FormData) {
 
   const rawData = {
@@ -176,6 +176,7 @@ export async function updateCustomer(id: string, formData: FormData) {
   revalidatePath('/dashboard/customers')
   redirect('/dashboard/customers')
 }
+ */
 
 export async function createTokenPrice(formData: FormData) {
 
