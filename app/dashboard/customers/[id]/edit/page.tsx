@@ -1,11 +1,12 @@
-import { fetchCustomerById, fetchCustomers } from '@/app/lib/data'
 import EditCustomerForm from '@/app/ui/customers/edit-form'
-import Breadcrumbs from '@/app/ui/movements/breadcrumbs'
+import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
+import { fetchUserById, fetchUsers } from '@/app/lib/data'
+import { notFound } from 'next/navigation'
 
 export default async function EditCustomer({ params }: { params: { id: string } }) {
   const { id } = params
-  const customer = await fetchCustomerById(id)
-  const allCustomers = await fetchCustomers()
+  const user = await fetchUserById(id)
+  const allUsers = await fetchUsers()
   
   return (
     <div> 
@@ -14,12 +15,12 @@ export default async function EditCustomer({ params }: { params: { id: string } 
           { label: 'Clientes', href: '/dashboard/customers' },
           {
             label: 'Editar',
-            href: '/dashboard/customers/[id]/edit',
+            href: `dashboard/customers/${id}/edit`,
             active: true,
           },
         ]}
       />
-      <EditCustomerForm customer={customer} customers={allCustomers} />
+      <EditCustomerForm user={user} allUsers={allUsers} />
     </div>
   )
 }

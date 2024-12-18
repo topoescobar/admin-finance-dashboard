@@ -1,0 +1,18 @@
+.emailContainerStyle:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.tooltipStyle {
+  visibility: visible;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 10px;
+  position: relative;
+  z-index: 1;
+  /* Position above the text */
+  left: 15%;
+  margin-left: -30px;
+  opacity: 0.7;
+  font-size: 12px;
+}
