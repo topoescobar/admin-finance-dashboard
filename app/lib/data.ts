@@ -135,12 +135,12 @@ export async function fetchTransactionById(id: string) {
     const data = await sql<TransactionForm>`
       SELECT
         transactions.id,
-        transactions.customerid,
         transactions.value,
         transactions.tokens,
         transactions.vault,
         transactions.status,
-        transactions.date
+        transactions.date,
+        transactions.userid
       FROM transactions
       WHERE transactions.id = ${id};
     `
@@ -149,8 +149,6 @@ export async function fetchTransactionById(id: string) {
       // Convert amount from cents to dollars
       amount: transaction.value / 100,
     }))
-    console.log("transaction", transaction)
-    console.log("data", data)
     
     return transaction[0]
   } catch (error) {

@@ -77,12 +77,12 @@ export type UserField = {
 
 export type TransactionForm = {
   id: string
-  customerid: string
   value: number
   tokens: number
   vault: string
   status: 'pending' | 'paid'
   date: Date
+  userid: string
 }
 
 export type TokenPriceTable = {

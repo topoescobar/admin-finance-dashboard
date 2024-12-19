@@ -1,6 +1,6 @@
 'use client'
 
-import { CustomerField, TransactionForm } from '@/app/lib/definitions'
+import { TransactionForm, UserField } from '@/app/lib/definitions'
 import {
   CheckIcon,
   ClockIcon,
@@ -14,7 +14,7 @@ import { updateTransaction } from '@/app/lib/actions'
 import './styles/transactions.css'
 
 export default function EditTransactionForm({ transaction, customers, }:
-  { transaction: TransactionForm, customers: CustomerField[] }) {
+  { transaction: TransactionForm, customers: UserField[] }) {
 
   //using bind to ensure that the values passed to the Server Action are encoded.
   const updateWithId = updateTransaction.bind(null, transaction.id)
@@ -33,18 +33,17 @@ export default function EditTransactionForm({ transaction, customers, }:
               Elegir cliente
             </label>
             <div className="relative">
-              <select
-                id="customer"
-                name="customerId"
-                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
-                defaultValue={transaction.customerid}
+              <select className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                id="user"
+                name="userId"
+                defaultValue={transaction.userid}
               >
                 <option value="" disabled>
                   Select
                 </option>
                 {customers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
-                    {customer.name}
+                    {customer.username}
                   </option>
                 ))}
               </select>
@@ -92,7 +91,6 @@ export default function EditTransactionForm({ transaction, customers, }:
               </div>
             </div>
           </div>
-
         </div>
 
         <div className='valuesContainer'>
