@@ -1,4 +1,3 @@
-import CreateCustomerForm from '@/app/ui/customers/create-form'
 import RegisterForm from '@/app/ui/register-form'
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 
@@ -15,7 +14,6 @@ export default function CreateCustomer() {
           },
         ]}
       />
-      {/* <CreateCustomerForm /> */}
         <RegisterForm />
     </div>
   )
