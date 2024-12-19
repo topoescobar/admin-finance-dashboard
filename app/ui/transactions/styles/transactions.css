@@ -1,6 +1,7 @@
 .valuesContainer{
   display: flex;
-  gap: 1em;
+  flex-wrap: wrap;
+  gap: 0em 0.5em;
 
 }
 

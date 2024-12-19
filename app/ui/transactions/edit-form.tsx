@@ -1,8 +1,7 @@
 'use client'
 
-import { CustomerField, InvoiceForm, MovementForm } from '@/app/lib/definitions'
+import { TransactionForm, UserField } from '@/app/lib/definitions'
 import {
-  CalendarIcon,
   CheckIcon,
   ClockIcon,
   CurrencyBangladeshiIcon,
@@ -11,43 +10,86 @@ import {
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { Button } from '@/app/ui/button'
-import { updateMovement } from '@/app/lib/actions'
-import './styles/movements.css'
+import { updateTransaction } from '@/app/lib/actions'
+import './styles/transactions.css'
 
-export default function EditMovementForm({ invoice, customers, }:
-  { invoice: MovementForm, customers: CustomerField[] }) {
+export default function EditTransactionForm({ transaction, customers, }:
+  { transaction: TransactionForm, customers: UserField[] }) {
 
-  const updateWithId = updateMovement.bind(null, invoice.id) //using bind to ensure that the values passed to the Server Action are encoded.
+  //using bind to ensure that the values passed to the Server Action are encoded.
+  const updateWithId = updateTransaction.bind(null, transaction.id)
 
-  const formattedDate = invoice.date.toISOString().split('T')[0]
-  console.log('formattedDate', formattedDate)
+  const formattedDate = transaction.date.toISOString().split('T')[0] //yyyy-mm-dd
 
   return (
     <form action={updateWithId}>
-      <input type="hidden" name="id" value={invoice.id} />
+      <input type="hidden" name="id" value={transaction.id} />
       <div className="rounded-md bg-gray-50 p-4 md:p-6 dark:bg-gray-800 dark:text-gray-100">
-        {/* Customer Name */}
-        <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Elegir cliente
-          </label>
-          <div className="relative">
-            <select
-              id="customer"
-              name="customerId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
-              defaultValue={invoice.customer_id}
-            >
-              <option value="" disabled>
-                Select
-              </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
+
+        <div className='valuesContainer'>
+          {/* Customer Name */}
+          <div className="mb-4">
+            <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+              Elegir cliente
+            </label>
+            <div className="relative">
+              <select className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                id="user"
+                name="userId"
+                defaultValue={transaction.userid}
+              >
+                <option value="" disabled>
+                  Select
                 </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                {customers.map((customer) => (
+                  <option key={customer.id} value={customer.id}>
+                    {customer.username}
+                  </option>
+                ))}
+              </select>
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+
+          {/* Vault */}
+          <div className="mb-4">
+            <label htmlFor="vault" className="mb-2 block text-sm font-medium">
+              Fondo
+            </label>
+            <div className="relative">
+              <select
+                id="vault"
+                name="vault"
+                className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                defaultValue={transaction.vault}
+              >
+                <option value="" disabled>
+                  Seleccionar
+                </option>
+                <option value="FCA">FCA-Ahorro</option>
+                <option value="FCD">FCD-Dinámico</option>
+              </select>
+              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+            </div>
+          </div>
+
+          {/* DATE */}
+          <div className="mb-4">
+            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+              Fecha
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="date"
+                  name="date"
+                  type="date"
+                  defaultValue={formattedDate}
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                {/* <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -64,7 +106,7 @@ export default function EditMovementForm({ invoice, customers, }:
                   name="value"
                   type="number"
                   step="0.01"
-                  defaultValue={invoice.value}
+                  defaultValue={transaction.value}
                   placeholder="Enter USD amount"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                 />
@@ -72,6 +114,7 @@ export default function EditMovementForm({ invoice, customers, }:
               </div>
             </div>
           </div>
+
           {/* Tokens Amount */}
           <div className="mb-4">
             <label htmlFor="amount" className="mb-2 block text-sm font-medium">
@@ -84,7 +127,7 @@ export default function EditMovementForm({ invoice, customers, }:
                   name="tokens"
                   type="number"
                   step="0.01"
-                  defaultValue={invoice.tokens}
+                  defaultValue={transaction.tokens}
                   placeholder="Enter tokens amount"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                 />
@@ -94,26 +137,7 @@ export default function EditMovementForm({ invoice, customers, }:
           </div>
         </div>
 
-        {/* DATE */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Fecha
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="date"
-                name="date"
-                type="date"
-                defaultValue={formattedDate}
-                className="peer block min-w-2 rounded-md border border-gray-200 py-2 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
-              />
-              {/* <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
-            </div>
-          </div>
-        </div>
-
-        {/* Invoice Status */}
+        {/* transaction Status */}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
             status
@@ -126,7 +150,7 @@ export default function EditMovementForm({ invoice, customers, }:
                   name="status"
                   type="radio"
                   value="pending"
-                  defaultChecked={invoice.status === 'pending'}
+                  defaultChecked={transaction.status === 'pending'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
@@ -142,7 +166,7 @@ export default function EditMovementForm({ invoice, customers, }:
                   name="status"
                   type="radio"
                   value="paid"
-                  defaultChecked={invoice.status === 'paid'}
+                  defaultChecked={transaction.status === 'paid'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label htmlFor="paid"
@@ -156,7 +180,7 @@ export default function EditMovementForm({ invoice, customers, }:
       </div>
 
       <div className="mt-6 flex justify-end gap-4">
-        <Link href="/dashboard/invoices"
+        <Link href="/dashboard/transactions"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">
           Cancelar
         </Link>

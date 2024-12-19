@@ -2,12 +2,19 @@ import { ArrowPathIcon } from '@heroicons/react/24/outline'
 import clsx from 'clsx'
 import Image from 'next/image'
 import { lusitana } from '@/app/ui/fonts'
-// import { LatestInvoice } from '@/app/lib/definitions'
 import { fetchLatestTransactions } from '@/app/lib/data'
+import { LatestTransaction } from '@/app/lib/definitions'
 
-export default async function LatestInvoices() {
-  // {latestInvoices, }: {latestInvoices: LatestInvoice[]})
-  const latestInvoices = await fetchLatestTransactions()
+export default async function LatestTransactions() {
+  // {LatestTransactions, }: {LatestTransactions: LatestTransaction[]})
+  // const LatestTransactions = await fetchLatestTransactions()
+  const LatestTransactions = [{
+    value: 2000,
+    id: '123',
+    username: 'Lee Robinson',
+    image_url: '/customers/lee-robinson.png',
+    email: 'johndoe@me.com',
+  }]
 
   return (
     <div className="flex w-full flex-col md:col-span-4">
@@ -16,7 +23,7 @@ export default async function LatestInvoices() {
       </h2>
       <div className="flex grow flex-col justify-between rounded-xl bg-gray-50 p-4 dark:bg-gray-800 dark:text-gray-100">
         <div className="bg-white px-6 dark:bg-gray-900">
-          {latestInvoices.map((tx, i) => {
+          {LatestTransactions.map((tx, i) => {
             return (
               <div
                 key={tx.id}

@@ -1,10 +1,9 @@
 import CardWrapper, { Card } from '@/app/ui/dashboard/cards'
 import RevenueChart from '@/app/ui/dashboard/revenue-chart'
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices'
+import LatestTransactions from '@/app/ui/dashboard/latest-transactions'
 import { lusitana } from '@/app/ui/fonts'
-import { fetchCardData } from '../../lib/data'
 import { Suspense } from 'react' //defer rendering parts until some condition is met (e.g. data is loaded)
-import { CardsSkeleton, LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons'
+import { CardsSkeleton, LatestTransactionsSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons'
 
 
 const DashboardPage = async () => {
@@ -23,8 +22,8 @@ const DashboardPage = async () => {
         <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />
         </Suspense>
-        <Suspense fallback={<LatestInvoicesSkeleton />}>
-          <LatestInvoices />
+        <Suspense fallback={<LatestTransactionsSkeleton />}>
+          <LatestTransactions />
         </Suspense>
 
       </div>

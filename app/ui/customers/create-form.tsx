@@ -15,7 +15,7 @@ export default function CreateCustomerForm() {
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="name" className="mb-2 block text-sm font-medium">
-            Nombre
+            Alias
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -23,7 +23,7 @@ export default function CreateCustomerForm() {
                 id="name"
                 name="name"
                 type="text"
-                placeholder="Enter Names"
+                placeholder="Alias de identificacion"
                 className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
               />
               <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -43,7 +43,7 @@ export default function CreateCustomerForm() {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="Enter email"
+                  placeholder="email"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                 />
                 <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -61,7 +61,7 @@ export default function CreateCustomerForm() {
                   id="imageURL"
                   name="image_url"
                   type="text"
-                  placeholder="Enter image URL"
+                  placeholder="image URL"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                 />
                 <LinkIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -74,11 +74,11 @@ export default function CreateCustomerForm() {
 
       <div className="mt-6 flex justify-end gap-4">
         <Link className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-          href="/dashboard/invoices" >
+          href="/dashboard/transactions" >
           Cancelar
         </Link>
         <Button type="submit">Crear</Button>
       </div>
     </form>
-  )
-}
+  ) 
+} 

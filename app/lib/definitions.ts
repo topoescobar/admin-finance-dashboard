@@ -1,26 +1,21 @@
 // This file contains type definitions for your data.
 // It describes the shape of the data, and what data type each property should accept.
-// For simplicity of teaching, we're manually defining these types.
-// However, these types are generated automatically if you're using an ORM such as Prisma.
+// These types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
-  name: string;
+  username: string;
   email: string;
   password: string;
-};
-
-export type Customer = {
-  id: string;
-  name: string;
-  email: string;
   image_url: string;
 };
 
-export type Invoice = {
+export type Transaction = {
   id: string;
   customer_id: string;
-  amount: number;
-  date: string;
+  value: number;
+  tokens: number;
+  vault: string;
+  date: Date;
   // In TypeScript, this is called a string union type.
   // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
   status: 'pending' | 'paid';
@@ -44,18 +39,7 @@ export type LatestTransactionRaw = Omit<LatestTransaction, 'value'> & {
   value: number;
 };
 
-export type InvoicesTable = {
-  id: string;
-  customer_id: string;
-  name: string;
-  email: string;
-  image_url: string;
-  date: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type MovementsTable = {
+export type TransactionsTable = {
   id: string
   customer_id: string
   name: string
@@ -71,38 +55,45 @@ export type CustomersTableType = {
   name: string;
   email: string;
   image_url: string;
-  total_invoices: number;
+  total_transactions: number;
   total_pending: number;
   total_paid: number;
+  total_tokens: number;
 };
-
-export type FormattedCustomersTable = {
+export type FormattedCustomersTable = { //revisar ya no seria necesaria
   id: string;
   name: string;
   email: string;
   image_url: string;
-  total_invoices: number;
-  total_pending: string;
-  total_paid: string;
+  total_transactions: number;
+  total_pending: number;
+  total_tokens: number;
 };
 
-export type CustomerField = {
+export type UserField = {
   id: string;
-  name: string;
+  username: string;
 };
 
-export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
-};
-
-export type MovementForm = {
+export type TransactionForm = {
   id: string
-  customer_id: string
   value: number
   tokens: number
+  vault: string
   status: 'pending' | 'paid'
   date: Date
+  userid: string
+}
+
+export type TokenPriceTable = {
+  id: string
+  date: Date,
+  tokenname: string,
+  price: number
+}
+
+export type StatusColorType = {
+  [key: string]: string
+  Organic: string
+  Sponsored: string
 }
