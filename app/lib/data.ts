@@ -2,14 +2,12 @@ import { sql } from '@vercel/postgres'
 import {
   CustomerField,
   CustomersTableType,
-  InvoiceForm,
   InvoicesTable,
-  MovementsTable,
-  LatestInvoiceRaw,
   User,
   Revenue,
   MovementForm,
   Customer,
+  LatestTransactionRaw,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -17,16 +15,14 @@ import { unstable_noStore } from 'next/cache'
 //call these functions on the server side to protect the database, 
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
 export async function fetchRevenue() {
-  // Add noStore() here to prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
-  unstable_noStore()
+  unstable_noStore()  // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
     console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const data = await sql<Revenue>`SELECT * FROM revenue`
 
@@ -39,21 +35,21 @@ export async function fetchRevenue() {
   }
 }
 
-export async function fetchLatestInvoices() {
+export async function fetchLatestTransactions() {
   unstable_noStore()
   try {
-    const data = await sql<LatestInvoiceRaw>`
-      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
-      ORDER BY invoices.date DESC
+    const data = await sql<LatestTransactionRaw>`
+      SELECT transactions.id, transactions.value, users.username, users.image_url, users.email
+      FROM transactions
+      JOIN users ON transactions.userid = users.id
+      ORDER BY transactions.date DESC
       LIMIT 5`
 
-    const latestInvoices = data.rows.map((invoice) => ({
+    const latestTransactions = data.rows.map((invoice) => ({
       ...invoice,
-      amount: formatCurrency(invoice.amount),
+      value: formatCurrency(invoice.value),
     }))
-    return latestInvoices
+    return latestTransactions
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch the latest invoices.')
@@ -66,12 +62,12 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`
+    const invoiceCountPromise = sql`SELECT COUNT(*) FROM transactions`
+    const customerCountPromise = sql`SELECT COUNT(*) FROM users`
     const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`
+         SUM(CASE WHEN status = 'paid' THEN value ELSE 0 END) AS "paid",
+         SUM(CASE WHEN status = 'pending' THEN value ELSE 0 END) AS "pending"
+         FROM transactions`
 
     const data = await Promise.all([ // initiate all promises at the same time, otherwise they start in a cascade.
       invoiceCountPromise,
