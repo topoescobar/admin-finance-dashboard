@@ -36,18 +36,17 @@ const tokenPriceSchema = z.object({
 }) 
 
 //omitir id que no viene en form
-const FormTransactionSchema = TransactionSchema.omit({ id: true })
-const FormCustomerSchema = UserSchema
+const FormTransactionSchema = TransactionSchema.omit({ id: true }).extend({ tokenprice: z.number() })
 export async function createTransaction(formData: FormData) {
-  
+
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const { userId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allFormData) //data validadada
+  const { userId, value, tokens, vault, status, date, tokenprice } = FormTransactionSchema.parse(allFormData) //data validadada
   //formatear fecha, el 2do elemento del split es la hora. en la base de datos formato (mm/dd/yyyy)
   const dateFormatted = new Date(date).toISOString().split('T')[0]
   try {
     await sql
-      `INSERT INTO transactions ( value, tokens, vault, status, date, userid)
-      VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId})` 
+      `INSERT INTO transactions ( value, tokens, vault, status, date, userid, tokenprice)
+      VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId}, ${tokenprice})` 
   } catch (error) {
     console.log(error)
     return {
@@ -56,6 +55,19 @@ export async function createTransaction(formData: FormData) {
   }
   revalidatePath('/dashboard/transactions') //revalidar para que no use datos de cache
   redirect('/dashboard/transactions')
+}
+
+export async function testCreateTransaction(formData: FormData) { 
+  const allFormData = Object.fromEntries(formData.entries()) 
+  console.log('testCreateTransaction', allFormData)
+  /*   
+  value: '100',
+  vault: 'FCA',
+  status: 'pending' 
+  date: '2024-12-20',
+  userId: 'ea008b49-e1b9-44f4-9e0f-0db8e071f898',
+  tokenprice: '1.888',
+            */
 }
 
 export async function updateTransaction(id: string, formData: FormData) {

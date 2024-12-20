@@ -1,10 +1,11 @@
-import Form from '@/app/ui/transactions/create-form'
+import CreateTransactionForm from '@/app/ui/transactions/create-form'
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
-import { fetchUsers } from '@/app/lib/data'
+import { fetchTokenPrice, fetchUsers } from '@/app/lib/data'
 
 export default async function CreateTransaction() {
 
   const users = await fetchUsers()
+  const tokenPrices = await fetchTokenPrice()
 
   return (
     <main>
@@ -18,7 +19,7 @@ export default async function CreateTransaction() {
           },
         ]}
       />
-      <Form users={users} />
+      <CreateTransactionForm users={users} tokenPrices={tokenPrices}/>
     </main>
   )
 }

@@ -1,4 +1,5 @@
-import { UserField } from '@/app/lib/definitions'
+'use client'
+import { TokenPriceTable, UserField } from '@/app/lib/definitions'
 import Link from 'next/link'
 import {
    CheckIcon,
@@ -8,12 +9,50 @@ import {
    UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/app/ui/button'
-import { createTransaction } from '@/app/lib/actions'
+import { createTransaction, testCreateTransaction } from '@/app/lib/actions'
 import './styles/transactions.css'
+import { useEffect, useState } from 'react'
+import { parse } from 'path'
 
-export default function FormPage({ users }: { users: UserField[] }) {
+export default function CreateTransactionForm({ users, tokenPrices }: { users: UserField[], tokenPrices: TokenPriceTable[] }) {
+   const [selectedVault, setSelectedVault] = useState('')
+   const [tokenPrice, setTokenPrice] = useState<number>(0)
+   const [tokensAmount, setTokensAmount] = useState<number>(0)
+
+   useEffect(() => {
+      const lastToken = tokenPrices.find((token) => token.tokenname === selectedVault)
+      if (lastToken) {
+         const tokenPrice = Number(lastToken.price)
+         if (!isNaN(tokenPrice)) {
+            setTokenPrice(Number(lastToken.price))
+         }
+      }
+   }, [selectedVault])
+
+   const handleVaultChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedVault(event.target.value)
+   }
+
+   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const tokenPrice = parseFloat(event.target.value)
+      const valueInput = document.querySelector<HTMLInputElement>('#value')
+      const value = parseFloat(valueInput?.value ?? '0')
+      const tokens =( value / tokenPrice).toFixed(3)
+      setTokenPrice(parseFloat(event.target.value))
+      setTokensAmount(Number(tokens))
+   }
+
+   const handleValueChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseFloat(event.target.value)
+      if (isNaN(value)) {
+         console.log('value is NaN')
+         return
+      }
+      const tokens = (value / tokenPrice).toFixed(3)
+      setTokensAmount(Number(tokens))
+   }
+
    return (
-
       <form action={createTransaction}>
          <div className="rounded-md bg-gray-50 p-4 md:p-6 dark:bg-gray-800 dark:text-gray-100">
             {/* Customer Name */}
@@ -40,7 +79,32 @@ export default function FormPage({ users }: { users: UserField[] }) {
             </div>
 
             <div className='valuesContainer'>
-               {/* Value Amount */}
+               <div className="mb-4">
+                  <label htmlFor="vault" className="mb-2 block text-sm font-medium">
+                     Elegir bóveda
+                  </label>
+                  <div className="relative">
+                     <select
+                        id="vault"
+                        name="vault"
+                        defaultValue=''
+                        onChange={handleVaultChange}
+                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                     >
+                        <option value="" disabled>
+                           Seleccionar
+                        </option>
+                        <option value="FCA">
+                           FCA: Fractal Crypto ahorro
+                        </option>
+                        <option value="FCD">
+                           FCD: Fractal Crypto dinamico
+                        </option>
+                     </select>
+                     <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
+                  </div>
+               </div>
+
                <div className="mb-4">
                   <label htmlFor="amount" className="mb-2 block text-sm font-medium">
                      Cant en USD
@@ -52,16 +116,45 @@ export default function FormPage({ users }: { users: UserField[] }) {
                            name="value"
                            type="number"
                            step="0.01"
-                           placeholder="Enter USD amount"
+                           placeholder="Valor en USD"
+                           onChange={handleValueChange}
                            className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                         />
                         <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                      </div>
                   </div>
                </div>
+
+
+            </div>
+
+            <div className="valuesContainer">
+
+               {/* Token price */}
+               <div className="mb-4">
+                  <label htmlFor="tokenprice" className="mb-2 block text-sm font-medium">
+                     Precio del token
+                  </label>
+                  <div className="relative mt-2 rounded-md">
+                     <div className="relative">
+                        <input
+                           id="tokenprice"
+                           name="tokenprice"
+                           type="number"
+                           step="0.001"
+                           placeholder="Precio del token"
+                           value={tokenPrice}
+                           onChange={handlePriceChange} 
+                           className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                        />
+                        <CurrencyBangladeshiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+                     </div>
+                  </div>
+               </div>
+
                {/* Tokens Amount */}
                <div className="mb-4">
-                  <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+                  <label htmlFor="tokens" className="mb-2 block text-sm font-medium">
                      Tokens
                   </label>
                   <div className="relative mt-2 rounded-md">
@@ -70,37 +163,12 @@ export default function FormPage({ users }: { users: UserField[] }) {
                            id="tokens"
                            name="tokens"
                            type="number"
-                           step="0.01"
-                           placeholder="Enter tokens amount"
+                           step="0.001"
+                           value={tokensAmount}
                            className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                         />
                         <CurrencyBangladeshiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                      </div>
-                  </div>
-               </div>
-               {/* Vault name */}
-               <div className="mb-4">
-                  <label htmlFor="vault" className="mb-2 block text-sm font-medium">
-                     Elegir bóveda
-                  </label>
-                  <div className="relative">
-                     <select
-                        id="vault"
-                        name="vault"
-                        defaultValue=''
-                        className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
-                     >
-                        <option value="" disabled>
-                           Seleccionar
-                        </option>
-                        <option value="FCA">
-                           FCA: Fractal Crypto ahorro
-                        </option>
-                        <option value="FCD">
-                           FCD: Fractal crypto dinamico
-                        </option>
-                     </select>
-                     <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
                   </div>
                </div>
             </div>

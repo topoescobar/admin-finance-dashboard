@@ -21,12 +21,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    console.log('Fetching revenue data...')
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     const data = await sql<Revenue>`SELECT * FROM revenue`
 
-    console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.')
 
     return data.rows
   } catch (error) {
@@ -121,7 +121,6 @@ export async function fetchFilteredTransactions(query: string, currentPage: numb
       ORDER BY transactions.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `
-    console.log(transactions.rows)
     return transactions.rows
 
   } catch (error) {
@@ -287,7 +286,6 @@ export async function fetchUserById(id: string) {
       FROM users
       WHERE users.id = ${id};
     `
-    console.log('data customer by id', data.rows[0])
     return data.rows[0]
 
   } catch (error) {
@@ -297,7 +295,7 @@ export async function fetchUserById(id: string) {
 }
 
 export async function fetchTokenPrice() {
-  unstable_noStore()
+  //unstable_noStore()
   try {
     const data = await sql<TokenPriceTable>`
       SELECT
@@ -308,7 +306,6 @@ export async function fetchTokenPrice() {
       FROM tokenprices
       ORDER BY tokenprices.date DESC
     `
-    console.log('token price fetched')
     const funds = data.rows
     return funds
 

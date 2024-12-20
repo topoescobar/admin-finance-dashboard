@@ -11,8 +11,6 @@ import { TokenPriceTable } from '@/app/lib/definitions'
 
 export default async function FcaTable({tokenPrices}: {tokenPrices: TokenPriceTable[]}) {
 
-  // const funds = await fetchTokenPrice()
-
   return (
     <div>
       <div className='fcaCointainer'>
@@ -46,7 +44,7 @@ export default async function FcaTable({tokenPrices}: {tokenPrices: TokenPriceTa
                     id="price"
                     name="price"
                     type="number"
-                    step="0.01"
+                    step="0.001"
                     placeholder="Enter price"
                     className="fundInput peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
                   />
@@ -73,7 +71,8 @@ export default async function FcaTable({tokenPrices}: {tokenPrices: TokenPriceTa
                 (
                   <tr key={reg.id} className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg tableRow" >
                     <td className="whitespace-nowrap px-3 py-3">
-                      {formatDateToLocal(reg.date)}
+                      {reg.date.toLocaleDateString('es-AR', 
+                        { day: '2-digit', month: '2-digit', year: '2-digit' })}
                     </td>
                     <td className="whitespace-nowrap px-3 py-3">
                       {reg.price}
