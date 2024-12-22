@@ -2,9 +2,6 @@
 	"folders": [
 		{
 			"path": "."
-		},
-		{
-			"path": "../tailwindcss.com"
 		}
 	],
 	"settings": {}
