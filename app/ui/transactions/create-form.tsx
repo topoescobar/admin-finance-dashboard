@@ -9,7 +9,7 @@ import {
    UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/app/ui/button'
-import { createTransaction, testCreateTransaction } from '@/app/lib/actions'
+import { createTransaction } from '@/app/lib/actions'
 import './styles/transactions.css'
 import { useEffect, useState } from 'react'
 import { parse } from 'path'
