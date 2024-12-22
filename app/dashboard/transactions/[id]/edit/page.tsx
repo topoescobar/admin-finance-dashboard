@@ -1,4 +1,4 @@
-import Form from '@/app/ui/transactions/edit-form'
+import EditTransactionForm from '@/app/ui/transactions/edit-form'
 import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 import { fetchTransactionById, fetchUsers } from '@/app/lib/data'
 import { notFound } from 'next/navigation'
@@ -26,7 +26,7 @@ export default async function EditTransaction({ params }: { params: { id: string
           },
         ]}
       />
-      <Form transaction={transaction} customers={customers} />
+      <EditTransactionForm transaction={transaction} customers={customers} />
     </main>
   )
 }

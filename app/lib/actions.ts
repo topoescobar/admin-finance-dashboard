@@ -61,9 +61,11 @@ export async function createTransaction(formData: FormData) {
   redirect('/dashboard/transactions')
 }
 
+const EditTransactionSchema = TransactionSchema.omit({ tokenprice: true })
 export async function updateTransaction(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)
-  const { userId, value, tokens, vault, status, date } = FormTransactionSchema.parse(allUpdateData)  
+  console.log('allUpdateData', allUpdateData)
+  const { userId, value, tokens, vault, status, date } = EditTransactionSchema.parse(allUpdateData)  
   const dateFormatted = new Date(date).toISOString().split('T')[0]
 
   try {

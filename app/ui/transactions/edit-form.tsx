@@ -118,7 +118,7 @@ export default function EditTransactionForm({ transaction, customers, }:
           {/* Tokens Amount */}
           <div className="mb-4">
             <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-              Tokens
+              Cant Tokens
             </label>
             <div className="relative mt-2 rounded-md">
               <div className="relative">
@@ -126,7 +126,7 @@ export default function EditTransactionForm({ transaction, customers, }:
                   id="tokens"
                   name="tokens"
                   type="number"
-                  step="0.01"
+                  step="0.001"
                   defaultValue={transaction.tokens}
                   placeholder="Enter tokens amount"
                   className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
