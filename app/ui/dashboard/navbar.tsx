@@ -3,11 +3,17 @@ import { SunIcon } from '@heroicons/react/20/solid'
 import { MoonIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 
+
 export default function Navbar() {
-   const localTheme = localStorage.getItem('theme')
-   const [theme, setTheme] = useState(localTheme || 'dark')
+   
+   const [theme, setTheme] = useState( () => {
+      const localTheme = localStorage.getItem('theme')
+      return localTheme ? localTheme : 'dark'
+   }
+)
 
    useEffect(() => {
+      const localTheme = localStorage.getItem('theme')
       if (localTheme) {
          setTheme(localTheme)
       }
