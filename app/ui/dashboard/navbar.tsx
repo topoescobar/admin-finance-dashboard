@@ -4,9 +4,17 @@ import { MoonIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 
 export default function Navbar() {
-   const [theme, setTheme] = useState('dark')
+   const localTheme = localStorage.getItem('theme')
+   const [theme, setTheme] = useState(localTheme || 'dark')
 
    useEffect(() => {
+      if (localTheme) {
+         setTheme(localTheme)
+      }
+   }, [])
+
+   useEffect(() => {
+      localStorage.setItem('theme', theme)
       document.documentElement.classList.toggle('dark', theme === 'dark')
    }, [theme])
 
