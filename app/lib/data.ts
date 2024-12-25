@@ -12,7 +12,7 @@ import {
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
 
-//call these functions on the server side to protect the database, 
+//call these functions on the server side to protect the database, without 'use server' It is agnostic
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
 export async function fetchRevenue() {
   unstable_noStore()  // This is equivalent to in fetch(..., {cache: 'no-store'}).

@@ -1,4 +1,6 @@
 'use server'
+//todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
+//se usara para las funciones que modifican la BD
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
@@ -6,8 +8,6 @@ import { date, z } from 'zod'
 import { signIn } from '@/auth'
 import { AuthError } from 'next-auth'
 import bcrypt from 'bcrypt'
-
-//todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
 
 //validacion usando zod
 const TransactionSchema = z.object({
@@ -123,33 +123,6 @@ export async function register(formData: FormData) {
   revalidatePath('/login')
   redirect('/login')
 }
-
-//YA NO SE USA, FUNCIONALIDAD CENTRADA EN USUARIO Y CLIENTE FUSIONADO
-/* export async function createCustomer(formData: FormData) {
-
-  const rawData = {
-    name: formData.get('name'),
-    email: formData.get('email') ,
-    image_url: formData.get('image_url') ,
-  }
-
-  const { name, email, image_url } = FormCustomerSchema.parse(rawData) //data validadada
-  
-  try {
-    //subir a DB
-    await sql
-      `INSERT INTO customers ( name, email, image_url)
-      VALUES (${name}, ${email}, ${image_url})`
-  } catch (error) {
-    console.log(error)
-    return {
-      message: 'Database Error: Failed to Create User.',
-    }
-  }
-  revalidatePath('/dashboard/customers') //revalidar para que no use datos de cache
-  redirect('/dashboard/customers')
-}
-  */
 
 export async function updateUser(id: string, formData: FormData) {
   const allUpdateData = Object.fromEntries(formData)

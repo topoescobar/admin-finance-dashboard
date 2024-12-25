@@ -3,9 +3,12 @@ import NavLinks from '@/app/ui/dashboard/nav-links'
 import Logo from '@/app/ui/acme-logo'
 import { PowerIcon } from '@heroicons/react/24/outline'
 import { auth, signOut } from '@/auth'
+import { getUser } from '@/app/lib/data'
 
 export default async function SideNav() {
   const authData = await auth()
+  const { id, email, username, image_url, role} = await getUser(authData?.user?.email ?? '')
+
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 dark:bg-slate-800">
       <Link className="mb-2 flex h-20 items-end justify-center rounded-md bg-blue-600 p-4 md:h-40 dark:bg-indigo-900" href="/" >
@@ -16,9 +19,9 @@ export default async function SideNav() {
 
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <div className='ml-2 hidden md:block'>
-          <span>{authData?.user?.name} </span> 
+          <span>{username} </span> 
         </div>
-        <NavLinks />
+        <NavLinks role={role} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block dark:bg-gray-800"></div>
         <form action={async () => {
           'use server'

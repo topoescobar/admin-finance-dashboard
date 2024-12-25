@@ -7,6 +7,7 @@ export type User = {
   email: string;
   password: string;
   image_url: string;
+  role: string;
 };
 
 export type Transaction = {
