@@ -7,14 +7,12 @@ import { useEffect, useRef, useState } from 'react'
 export default function Navbar() {
 
    const [theme, setTheme] = useState('')
-   const didRun = useRef(false)
 
    useEffect(() => {
       const localTheme = localStorage.getItem('theme')
-      if (!didRun.current) {
-         setTheme(localTheme || 'dark')         
-         didRun.current = true
-      }
+      if (localTheme) {
+         setTheme(localTheme)
+      } 
    }, [])
 
    useEffect(() => {
