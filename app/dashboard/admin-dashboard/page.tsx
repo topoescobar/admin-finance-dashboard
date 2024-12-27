@@ -4,7 +4,6 @@ import LatestTransactions from '@/app/ui/dashboard/latest-transactions'
 import { lusitana } from '@/app/ui/fonts'
 import { Suspense } from 'react' //defer rendering parts until some condition is met (e.g. data is loaded)
 import { CardsSkeleton, LatestTransactionsSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons'
-import { fetchLastTokensPrices } from '@/app/lib/data'
 
 
 const DashboardPage = async () => {
@@ -12,7 +11,7 @@ const DashboardPage = async () => {
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Resumen
+        Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <Suspense fallback={<CardsSkeleton />}>
