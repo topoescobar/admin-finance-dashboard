@@ -56,43 +56,43 @@ export async function fetchLatestTransactions() {
   }
 }
 
-/* fetchCardData
- export async function fetchCardData() {
-  unstable_noStore()
+ export async function fetchCardData(userid: string) {
   try {
-    // You can probably combine these into a single SQL query
-    // However, we are intentionally splitting them to demonstrate
-    // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM transactions`
-    const customerCountPromise = sql`SELECT COUNT(*) FROM users`
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN value ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN value ELSE 0 END) AS "pending"
-         FROM transactions`
+    const totalTokensPromiseFCA = sql`
+      SELECT SUM(tokens) AS total_tokens
+      FROM transactions
+      WHERE userid = ${userid} and VAULT = 'FCA'`
+    const totalTokensPromiseFCD = sql`
+      SELECT SUM(tokens) AS total_tokens
+      FROM transactions
+      WHERE userid = ${userid} and VAULT = 'FCD'`
+    const transactionStatusPromise = sql`
+      SELECT 
+        SUM(CASE WHEN vault = 'FCA' AND status = 'paid' THEN value ELSE 0 END) AS "sumDepositsFCA",
+        SUM(CASE WHEN vault = 'FCA' AND status = 'pending' THEN value ELSE 0 END) AS "sumPendingFCA",
+        SUM(CASE WHEN vault = 'FCD' AND status = 'paid' THEN value ELSE 0 END) AS "sumDepositsFCD",
+        SUM(CASE WHEN vault = 'FCD' AND status = 'pending' THEN value ELSE 0 END) AS "sumPendingFCD"
+      FROM transactions WHERE userid = ${userid}`
 
     const data = await Promise.all([ // initiate all promises at the same time, otherwise they start in a cascade.
-      transactionCountPromise,
-      customerCountPromise,
+      totalTokensPromiseFCA,
+      totalTokensPromiseFCD,
       transactionStatusPromise,
     ])
 
-    const numberOftransactions = Number(data[0].rows[0].count ?? '0')
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0')
-    const totalPaidtransactions = formatCurrency(data[2].rows[0].paid ?? '0')
-    const totalPendingTransactions = formatCurrency(data[2].rows[0].pending ?? '0')
-
     return {
-      numberOfCustomers,
-      numberOfTransactions,
-      totalPaidTransactions,
-      totalPendingTransactions,
+      totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0,
+      totalTokensFCD: Number(data[1].rows[0].total_tokens) ?? 0,
+      totalDepositsFCA: Number(data[2].rows[0].sumDepositsFCA) ?? 0,
+      totalPendingFCA: Number(data[2].rows[0].sumPendingFCA) ?? 0,
+      totalDepositsFCD: Number(data[2].rows[0].sumDepositsFCD) ?? 0,
+      totalPendingFCD: Number(data[2].rows[0].sumPendingFCD) ?? 0,
     }
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch card data.')
   }
 }
- */
 
 const ITEMS_PER_PAGE = 6
 
@@ -275,7 +275,6 @@ export async function getUser(email: string) {
 }
 
 export async function fetchUserById(id: string) {
-  unstable_noStore()
   try {
     const data = await sql<User>`
       SELECT
@@ -295,7 +294,6 @@ export async function fetchUserById(id: string) {
 }
 
 export async function fetchTokenPrice() {
-  //unstable_noStore()
   try {
     const data = await sql<TokenPriceTable>`
       SELECT
@@ -312,5 +310,25 @@ export async function fetchTokenPrice() {
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch funds token prices.')
+  }
+}
+
+export async function fetchLastTokensPrices() {
+  try {
+    const data = await sql<TokenPriceTable>`
+    SELECT tokenname, price, date
+    FROM tokenprices
+    WHERE (tokenname = 'FCA' AND date = (SELECT MAX(date) FROM tokenprices WHERE tokenname = 'FCA'))
+    OR (tokenname = 'FCD' AND date = (SELECT MAX(date) FROM tokenprices WHERE tokenname = 'FCD'))
+    ORDER BY tokenname ASC
+    `
+    const FCAprice = Number(data.rows[0].price) 
+    const FCDprice = Number(data.rows[1].price)
+
+    return { FCAprice, FCDprice }
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch last token prices.')
   }
 }

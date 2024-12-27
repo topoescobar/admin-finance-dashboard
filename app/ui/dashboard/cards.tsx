@@ -5,6 +5,8 @@ import {
   InboxIcon,
 } from '@heroicons/react/24/outline'
 import { lusitana } from '@/app/ui/fonts'
+import {  fetchCardData, fetchLastTokensPrices } from '@/app/lib/data'
+import { getUserData } from '@/app/lib/user'
 
 const iconMap = {
   collected: BanknotesIcon,
@@ -15,19 +17,23 @@ const iconMap = {
 
 export default async function CardWrapper() {
   
-  // const cardData = await fetchCardData()
-  const cardData = {
-    totalPaidTransactions: 0,
-    totalPendingTransactions: 0,
-    numberOfTransactions: 0,
-    numberOfCustomers: 0,
-  }
+  const userData = await getUserData()
+  const investment = await fetchCardData(userData.id)
+  console.log('dashboardData', investment)
+  const { FCAprice, FCDprice } = await fetchLastTokensPrices()
+
+  const currentValueFCA = investment.totalTokensFCA * FCAprice
+  const currentValueFCD = investment.totalTokensFCD * FCDprice
+  const variationFCA = currentValueFCA - investment.totalDepositsFCA
+  const variationFCD = currentValueFCD - investment.totalDepositsFCD
+
   return (
     <>
-      <Card title="Collected" value={cardData.totalPaidTransactions} type="collected" />
-      <Card title="Pending" value={cardData.totalPendingTransactions} type="pending" />
-      <Card title="Total Transactions" value={cardData.numberOfTransactions} type="transactions" />
-      <Card title="Total Customers" value={cardData.numberOfCustomers} type="customers" />
+      <Card title="Valor total invertido" value={currentValueFCA + currentValueFCD} type="collected" />
+      <Card title="Fondo Ahorro" value={currentValueFCA} type="collected" />
+      <Card title="Ganancias Ahorro" value={variationFCA} type="transactions" />
+      <Card title="Fondo dinámico" value={currentValueFCD} type="collected" />
+      <Card title="Ganancias dinámico" value={variationFCD} type="transactions" />
     </>
   )
 }
