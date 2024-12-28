@@ -6,25 +6,28 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function Navbar() {
 
+   const news = 'Ultimas novedades'
    const [theme, setTheme] = useState('')
 
    useEffect(() => {
       const localTheme = localStorage.getItem('theme')
       if (localTheme) {
          setTheme(localTheme)
-      } else {
-         setTheme('dark')
-      }
+      } 
    }, [])
 
    useEffect(() => {
       localStorage.setItem('theme', theme)
-      document.documentElement.classList.toggle('dark', theme === 'dark')
+      if (theme === 'dark') {
+         document.documentElement.classList.add('dark')
+      } else {
+         document.documentElement.classList.remove('dark')
+      }
    }, [theme])
 
    return (
       <div className="flex items-center justify-between p-4 bg-gray-100 dark:bg-slate-800 sticky top-0 z-40 navbar">
-         <h1 className="text-lg font-semibold">Seccion navbar</h1>
+         <h1 className="text-lg font-semibold slide">{news}</h1>
          <div className="flex items-center space-x-2">
             <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
