@@ -4,9 +4,9 @@ import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
 
 const CustomersPage = async ({ searchParams }:
-   { searchParams?: { search?: string }}) => {
+   { searchParams?: Promise<{ search?: string }>, }) => {
 
-  const query = searchParams?.search || ''
+  const query = (await searchParams)?.search || ''
 
   return (
     <div className="w-full">
