@@ -1,10 +1,9 @@
 import Image from 'next/image'
 import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
-import { useState } from 'react'
 import './styles/customers.css'
 import {  fetchFilteredUsers } from '@/app/lib/data'
-import { DeleteCustomer, UpdateCustomer } from './buttons'
+import { DeleteCustomer, UpdateCustomer } from './buttons'  
 
 export default async function CustomersTable({ query }:
   { query: string }) {
