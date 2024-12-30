@@ -4,9 +4,8 @@ import LatestTransactions from '@/app/ui/dashboard/latest-transactions'
 import { lusitana } from '@/app/ui/fonts'
 import { Suspense } from 'react' //defer rendering parts until some condition is met (e.g. data is loaded)
 import { CardsSkeleton, LatestTransactionsSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons'
-import { fetchLastTokensPrices } from '@/app/lib/data'
-import Card from '@/app/ui/dashboard/card'
-
+import FcaChart from '@/app/ui/funds/fca-chart'
+import FcaPriceChart from '@/app/ui/dashboard/fca-chart'
 
 const DashboardPage = async () => {
 
@@ -22,8 +21,9 @@ const DashboardPage = async () => {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<RevenueChartSkeleton />}>
-          <RevenueChart />
+          <FcaPriceChart />
         </Suspense>
+
         <Suspense fallback={<LatestTransactionsSkeleton />}>
           <LatestTransactions />
         </Suspense>

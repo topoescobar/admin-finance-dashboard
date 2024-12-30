@@ -1,6 +1,6 @@
 import { fetchCardData, fetchLastTokensPrices } from '@/app/lib/data'
 import { getUserData } from '@/app/lib/user'
-import Card from './card'
+import Card, { CardDetails } from './card'
 
 
 export default async function CardWrapper() {
@@ -19,15 +19,14 @@ export default async function CardWrapper() {
   return (
     <>
       <div className='grid col-span-2'>
-        <Card title="Total invertido" value={totalValue.toFixed(2)} type="totalCard" />
+        <Card title="Total invertido" value={totalValue.toFixed(2)} type="collected" />
       </div>
       <div className='grid col-span-2'>
-        <Card title="Ganancias totales" value={totalEarned.toFixed(2)} type="totalCard" />
+        <Card title="Ganancias totales" value={totalEarned.toFixed(2)} type="chartBar" />
       </div>
-      <Card title="Fondo Ahorro" value={currentValueFCA.toFixed(2)} type="collected" />
-      <Card title="Ganancias Ahorro" value={variationFCA.toFixed(2)} type="transactions" />
-      <Card title="Fondo dinámico" value={currentValueFCD.toFixed(2)} type="collected" />
-      <Card title="Ganancias dinámico" value={variationFCD.toFixed(2)} type="transactions" />
+  
+      <CardDetails title="Fondo Ahorro" value={currentValueFCA.toFixed(2)} earnings={variationFCA.toFixed(2)} type="saving" />
+      <CardDetails title="Fondo dinámico" value={currentValueFCD.toFixed(2)} earnings={variationFCD.toFixed(2)} type="dynamic" />
     </>
   )
 }
