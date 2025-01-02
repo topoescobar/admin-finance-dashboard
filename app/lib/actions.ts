@@ -152,7 +152,7 @@ export async function deleteUser(id: string) {
   revalidatePath('/dashboard/customers')
 }
 
-export async function createTokenPrice(formData: FormData) {
+export async function createTokenPrice(formData: FormData): Promise<void> {
 
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
   const { date, price, tokenname } = tokenPriceSchema.parse(allFormData) //data validadada
@@ -164,12 +164,8 @@ export async function createTokenPrice(formData: FormData) {
       VALUES (${date}, ${tokenname}, ${price})`
   } catch (error) {
     console.log(error)
-    return {
-      message: 'Database Error: Failed to Create token price.',
-    }
   }
   revalidatePath('/dashboard/funds') //revalidar para que no use datos de cache
-  // redirect('/dashboard/transactions')
 }
 
 export async function deletePriceWithId(id: string) {

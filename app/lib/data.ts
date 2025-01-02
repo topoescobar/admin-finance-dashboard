@@ -15,7 +15,6 @@ import { unstable_noStore } from 'next/cache'
 //call these functions on the server side to protect the database, without 'use server' It is agnostic
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
 export async function fetchRevenue() {
-  unstable_noStore()  // This is equivalent to in fetch(..., {cache: 'no-store'}).
 
   try {
     // Artificially delay a response for demo purposes.
@@ -79,7 +78,7 @@ export async function fetchLatestTransactions() {
       totalTokensPromiseFCD,
       transactionStatusPromise,
     ])
-
+    console.log('fetching card data...')
     return {
       totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0,
       totalTokensFCD: Number(data[1].rows[0].total_tokens) ?? 0,

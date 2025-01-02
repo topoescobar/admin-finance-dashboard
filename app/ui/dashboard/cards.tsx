@@ -1,16 +1,9 @@
-import { fetchCardData, fetchLastTokensPrices } from '@/app/lib/data'
-import { getUserData } from '@/app/lib/user'
 import Card, { CardDetails } from './card'
 
+export default async function CardWrapper( { investment, token } : { investment: any, token: any }) {
 
-export default async function CardWrapper() {
-
-  const userData = await getUserData()
-  const investment = await fetchCardData(userData.id)
-  const { FCAprice, FCDprice } = await fetchLastTokensPrices()
-
-  const currentValueFCA = investment.totalTokensFCA * FCAprice
-  const currentValueFCD = investment.totalTokensFCD * FCDprice
+  const currentValueFCA = investment.totalTokensFCA * token.FCAprice
+  const currentValueFCD = investment.totalTokensFCD * token.FCDprice
   const totalValue = currentValueFCA + currentValueFCD
   const totalEarned = totalValue - investment.totalDepositsFCA - investment.totalDepositsFCD
   const variationFCA = currentValueFCA - investment.totalDepositsFCA

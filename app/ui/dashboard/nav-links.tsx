@@ -12,6 +12,7 @@ import { usePathname } from 'next/navigation'
 // Map of links to display in the side navigation.
 const adminLinks = [
   { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
+  { name: 'Admin Dashboard', href: '/dashboard/admin-dashboard', icon: HomeIcon },
   { name: 'Transacciones', href: '/dashboard/transactions', icon: DocumentDuplicateIcon,},
   { name: 'Clientes', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'Fondos', href: '/dashboard/funds', icon: BanknotesIcon },

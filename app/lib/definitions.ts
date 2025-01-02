@@ -93,6 +93,14 @@ export type TokenPriceTable = {
   price: number
 }
 
+export type TokenPriceHistory = {
+  id: string
+  date: string,
+  tokenname: string,
+  price: number
+}
+
+
 export type StatusColorType = {
   [key: string]: string
   Organic: string

@@ -17,8 +17,10 @@
   width: 14rem;
 }
 
-.fca{
+.fundsContainer{
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
 }
