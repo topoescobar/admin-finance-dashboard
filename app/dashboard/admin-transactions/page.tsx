@@ -5,13 +5,13 @@ import { CreateTransaction } from '@/app/ui/transactions/buttons'
 import { lusitana } from '@/app/ui/fonts'
 import { TransactionsTableSkeleton } from '@/app/ui/skeletons'
 import { Suspense } from 'react'
-import { string } from 'zod'
 import { fetchTransactionsPages } from '@/app/lib/data'
 
 export default async function TransactionsPage({ searchParams, }:
   {
     searchParams?: Promise<{ search?: string, page?: string }>
   }) {
+
   const query = (await searchParams)?.search || ''
   const currentPage = Number((await searchParams)?.page) || 1
   const totalPages = await fetchTransactionsPages(query)
@@ -28,7 +28,7 @@ export default async function TransactionsPage({ searchParams, }:
 
       {/* suspense solo se ejecuta una vez por defecto, se le agrega el key para forzar la renderización del fallback cada vez que hace el fetching */}
       <Suspense key={query + currentPage} fallback={<TransactionsTableSkeleton />}>
-        <TransactionsTable query={query} currentPage={currentPage} />
+        <TransactionsTable query={query} currentPage={currentPage}  />
       </Suspense>
 
       <div className="mt-5 flex w-full justify-center">

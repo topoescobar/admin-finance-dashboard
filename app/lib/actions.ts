@@ -39,7 +39,7 @@ const tokenPriceSchema = z.object({
 //omitir id que no viene en form
 const FormTransactionSchema = TransactionSchema.omit({ id: true })
 
-export async function createTransaction(formData: FormData) {
+export async function createTransaction(formData: FormData): Promise<void> {
   
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
   const { userId, value, tokens, vault, status, date, tokenprice } = FormTransactionSchema.parse(allFormData) //data validadada
@@ -52,10 +52,9 @@ export async function createTransaction(formData: FormData) {
       `INSERT INTO transactions ( value, tokens, vault, status, date, userid, tokenprice)
       VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId}, ${tokenpriceFormatted})` 
   } catch (error) {
+    console.log('Database Error: Failed to Create Transaction.')
     console.log(error)
-    return {
-      message: 'Database Error: Failed to Create Transaction.',
-    }
+    return Promise.resolve()
   }
   revalidatePath('/dashboard/transactions') //revalidar para que no use datos de cache
   redirect('/dashboard/transactions')
@@ -81,12 +80,12 @@ export async function updateTransaction(id: string, formData: FormData) {
   redirect('/dashboard/transactions')
 }
 
-export async function deleteTransaction(id: string) {
+export async function deleteTransaction(id: string): Promise<void> {
   try {
     await sql`DELETE FROM transactions WHERE id = ${id}`
   } catch (error) {
-    console.log(error)
-    return { message: 'Database Error: Failed to Delete Transaction.' }
+    console.log('deleteTransaction failed',error)
+    return Promise.resolve()
   }
   revalidatePath('/dashboard/transactions')
 }
@@ -164,16 +163,16 @@ export async function createTokenPrice(formData: FormData): Promise<void> {
       VALUES (${date}, ${tokenname}, ${price})`
   } catch (error) {
     console.log(error)
+    return Promise.resolve()
   }
   revalidatePath('/dashboard/funds') //revalidar para que no use datos de cache
 }
 
-export async function deletePriceWithId(id: string) {
+export async function deletePriceWithId(id: string): Promise<void> {
   try {
     await sql`DELETE FROM tokenprices WHERE id = ${id}`
   } catch (error) {
-    console.log(error)
-    return { message: 'Database Error: Failed to Delete token price.' }
+    console.log('deletePriceWithId failed' ,error)
   }
   revalidatePath('/dashboard/funds')
 }

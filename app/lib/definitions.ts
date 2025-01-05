@@ -22,6 +22,8 @@ export type Transaction = {
   status: 'pending' | 'paid';
 };
 
+export type UserTransaction = Omit<Transaction, 'customer_id'>
+
 export type Revenue = {
   month: string;
   revenue: number;

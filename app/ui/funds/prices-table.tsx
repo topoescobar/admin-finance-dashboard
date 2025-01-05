@@ -11,9 +11,7 @@ export default async function TokenPrices({tokenPrices, tokenName}: {tokenPrices
 
   return (
     <div>
-      <div className='fcaCointainer'>
-        <h4>Fondo {tokenName}</h4>
-     
+      <div className='fcaCointainer'>     
         <div className="bg-gray-50 md:pt-0 dark:bg-slate-800 dark:text-white tableContainer">
           <table className="hidden text-gray-900 md:table dark:text-white">
             <thead className="rounded-lg text-left text-sm font-normal">

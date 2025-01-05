@@ -18,10 +18,14 @@ export default async function FundsPage() {
       <div className='fundsContainer'>
         <div className=''>
           {/* <FcaChart tokenPrices={tokenPrices} /> */}
+          <div>
+            <h4>Fondo Ahorro</h4>
+          </div>
           <PriceForm tokenName='FCA'/>
           <PricesTable tokenPrices={fcaPrices} tokenName='Ahorro' />
         </div>
         <div>
+          <h4>Fondo Dinámico</h4>
           <PriceForm tokenName='FCD' />
           <PricesTable tokenPrices={fcdPrices} tokenName='Dinámico' />
         </div>

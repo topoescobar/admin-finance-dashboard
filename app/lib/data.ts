@@ -8,25 +8,21 @@ import {
   Revenue,
   TokenPriceTable,
   UserField,
+  Transaction,
+  UserTransaction,
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
+
+//CONFIG
+const ITEMS_PER_PAGE = 6 //items for pagination
 
 //call these functions on the server side to protect the database, without 'use server' It is agnostic
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
 export async function fetchRevenue() {
 
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
-
-    console.log('Fetching revenue data...')
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-
     const data = await sql<Revenue>`SELECT * FROM revenue`
-
-    console.log('Data fetch completed after 3 seconds.')
-
     return data.rows
   } catch (error) {
     console.error('Database Error:', error)
@@ -93,8 +89,6 @@ export async function fetchLatestTransactions() {
   }
 }
 
-const ITEMS_PER_PAGE = 6
-
 export async function fetchFilteredTransactions(query: string, currentPage: number,) {
   //unstable_noStore()
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
@@ -157,7 +151,6 @@ export async function fetchTransactionById(id: string) {
 }
 
 export async function fetchTransactionsPages(query: string) {
-  unstable_noStore()
   try {
     const count = await sql`SELECT COUNT(*)
     FROM transactions
@@ -329,5 +322,51 @@ export async function fetchLastTokensPrices() {
   } catch (error) {
     console.error('Database Error:', error)
     throw new Error('Failed to fetch last token prices.')
+  }
+}
+
+export async function fetchUserTransactions(query: string, currentPage: number, userid: string) {
+  console.log('fetchUserTransactions',query, currentPage, userid)
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE
+  try {
+    const transactions = await sql<UserTransaction> `
+      SELECT
+        transactions.id,
+        transactions.value,
+        transactions.tokens,
+        transactions.vault,
+        transactions.date,
+        transactions.status
+      FROM transactions
+      WHERE
+        transactions.userid = ${userid}
+      ORDER BY transactions.date DESC
+      `
+      // LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset} *retiro temporal de paginacion
+    return transactions.rows
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch user transactions.')
+  }
+}
+
+export async function fetchUserTxPages(query: string, userid: string) {
+  try {
+    const count = await sql`
+    SELECT COUNT(*)
+    FROM transactions
+    WHERE 
+      transactions.userid = ${userid} AND
+      transactions.date::text ILIKE ${`%${query}%`} OR
+      transactions.status ILIKE ${`%${query}%`} OR
+      transactions.vault ILIKE ${`%${query}%`}
+      
+  `
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE)
+    return totalPages
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch total number of transactions.')
   }
 }
