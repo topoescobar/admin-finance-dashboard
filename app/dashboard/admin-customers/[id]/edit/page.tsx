@@ -12,10 +12,10 @@ export default async function EditCustomer({ params }: { params: { id: string } 
     <div> 
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Clientes', href: '/dashboard/customers' },
+          { label: 'Clientes', href: '/dashboard/admin-customers' },
           {
             label: 'Editar',
-            href: `dashboard/customers/${id}/edit`,
+            href: `dashboard/admin-customers/${id}/edit`,
             active: true,
           },
         ]}

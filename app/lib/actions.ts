@@ -141,16 +141,16 @@ export async function updateUser(id: string, formData: FormData): Promise<void> 
     return 
   }
 
-  revalidatePath('/dashboard/customers')
-  redirect('/dashboard/customers')
+  revalidatePath('/dashboard/admin-customers')
+  redirect('/dashboard/admin-customers')
 }
 
-export async function deleteUser(id: string) {
+export async function deleteUser(id: string): Promise<void>{
   try {
     await sql`DELETE FROM users WHERE id = ${id}`
   } catch (error) {
     console.log(error)
-    return { message: 'Database Error: Failed to Delete user.' }
+    return
   }
   revalidatePath('/dashboard/customers')
 }
