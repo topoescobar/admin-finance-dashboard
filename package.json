@@ -13,7 +13,6 @@
     "@headlessui/tailwindcss": "^0.2.0",
     "@heroicons/react": "^2.0.18",
     "@remixicon/react": "^4.2.0",
-    "@tremor/react": "^3.16.1",
     "@types/node": "^20.5.7",
     "@vercel/postgres": "^0.10.0",
     "autoprefixer": "^10.4.15",
