@@ -1,7 +1,7 @@
 import Logo from '@/app/ui/acme-logo'
 import LoginForm from '@/app/ui/login-form'
 import { Button } from '../ui/button'
-import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
+import {  Bars3BottomLeftIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
 export default function LoginPage() {
@@ -26,7 +26,7 @@ function RegisterButton() {
   return (
     <Link href="/register">
       <Button className="mt-4 w-full" >
-        Register <ArrowRightOnRectangleIcon className="ml-auto h-5 w-5 text-gray-50" />
+        Registrarme <Bars3BottomLeftIcon className="h-5 w-5 ml-auto" />
       </Button>
     </Link>
   )

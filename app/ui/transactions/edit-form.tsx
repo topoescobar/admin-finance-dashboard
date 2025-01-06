@@ -43,7 +43,7 @@ export default function EditTransactionForm({ transaction, customers, }:
                 </option>
                 {customers.map((customer) => (
                   <option key={customer.id} value={customer.id}>
-                    {customer.username}
+                    {customer.email}
                   </option>
                 ))}
               </select>

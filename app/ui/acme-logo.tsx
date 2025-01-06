@@ -6,7 +6,7 @@ export default function Logo() {
   return (
     <div className={`${oswald.className} sidebar_logo`} >
       <Image className='hidden md:block' src={'/logo_oscuro.png'} width={250} height={250} alt={'Logo'} />
-      <p className='block md:hidden'>Fractal Crypto Lab</p>
+      <Image className='block md:hidden' src={'/logo_oscuro.png'} width={150} height={150} alt={'Logo'} />
     </div>
   )
 }

@@ -3,7 +3,6 @@
 // These types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
   id: string;
-  username: string;
   email: string;
   password: string;
   image_url: string;
@@ -32,7 +31,6 @@ export type Revenue = {
 export type LatestTransaction = {
   id: string;
   value: string;
-  username: string;
   image_url: string;
   email: string;
 };
@@ -75,7 +73,7 @@ export type FormattedCustomersTable = { //revisar ya no seria necesaria
 
 export type UserField = {
   id: string;
-  username: string;
+  email: string;
 };
 
 export type TransactionForm = {

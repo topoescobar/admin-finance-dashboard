@@ -7,7 +7,7 @@ import { getUser } from '@/app/lib/data'
 
 export default async function SideNav() {
   const authData = await auth()
-  const { id, email, username, image_url, role} = await getUser(authData?.user?.email ?? '')
+  const { id, email, image_url, role} = await getUser(authData?.user?.email ?? '')
 
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 dark:bg-slate-800">
@@ -19,7 +19,7 @@ export default async function SideNav() {
 
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
         <div className='ml-2 hidden md:block'>
-          <span>{username} </span> 
+          <span>{email.split('@')[0]} </span> 
         </div>
         <NavLinks role={role} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block dark:bg-gray-800"></div>

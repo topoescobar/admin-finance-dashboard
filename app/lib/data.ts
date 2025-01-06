@@ -31,10 +31,9 @@ export async function fetchRevenue() {
 }
 
 export async function fetchLatestTransactions() {
-  unstable_noStore()
   try {
     const data = await sql<LatestTransactionRaw>`
-      SELECT transactions.id, transactions.value, users.username, users.image_url, users.email
+      SELECT transactions.id, transactions.value, users.image_url, users.email
       FROM transactions
       JOIN users ON transactions.userid = users.id
       ORDER BY transactions.date DESC
@@ -101,12 +100,11 @@ export async function fetchFilteredTransactions(query: string, currentPage: numb
         transactions.vault,
         transactions.date,
         transactions.status,
-        users.username,
+        users.email,
         users.image_url
       FROM transactions
       JOIN users ON transactions.userid = users.id
       WHERE
-        users.username ILIKE ${`%${query}%`} OR
         users.email ILIKE ${`%${query}%`} OR
         transactions.vault ILIKE ${`%${query}%`} OR
         transactions.date::text ILIKE ${`%${query}%`} OR
@@ -156,7 +154,6 @@ export async function fetchTransactionsPages(query: string) {
     FROM transactions
     JOIN users ON transactions.userid = users.id
     WHERE
-      users.username ILIKE ${`%${query}%`} OR
       users.email ILIKE ${`%${query}%`} OR
       transactions.date::text ILIKE ${`%${query}%`} OR
       transactions.status ILIKE ${`%${query}%`}
@@ -170,14 +167,13 @@ export async function fetchTransactionsPages(query: string) {
 }
 
 export async function fetchUsers() {
-  unstable_noStore()
   try {
     const data = await sql<UserField>`
       SELECT
         id,
-        username
+        email
       FROM users
-      ORDER BY username ASC
+      ORDER BY email ASC
     `
     return data.rows
 
@@ -193,7 +189,6 @@ export async function fetchFilteredUsers(query: string) {
     const data = await sql`
 		SELECT
 		  users.id,
-		  users.username,
 		  users.email,
 		  users.image_url,
 		  COUNT(transactions.id) AS total_transactions,
@@ -202,10 +197,9 @@ export async function fetchFilteredUsers(query: string) {
 		FROM users
     LEFT JOIN transactions ON users.id = transactions.userid
 		WHERE
-		  users.username ILIKE ${`%${query}%`} OR
       users.email ILIKE ${`%${query}%`}
-		GROUP BY users.id, users.username, users.email, users.image_url 
-		ORDER BY users.username ASC
+		GROUP BY users.id, users.email, users.image_url 
+		ORDER BY users.email ASC
 	  `// Todos los campos usados en SELECT deben estar en el GROUP BY
 
     /*    const customers = data.rows.map((customer) => ({
@@ -271,7 +265,6 @@ export async function fetchUserById(id: string) {
     const data = await sql<User>`
       SELECT
         users.id,
-        users.username,
         users.email,
         users.image_url
       FROM users

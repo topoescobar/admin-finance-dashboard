@@ -27,9 +27,9 @@ export default async function TransactionsTable({ query, currentPage, }:
                         src={tx.image_url === null || tx.image_url.trim() === "" ? "/customers/noavatar.png" : tx.image_url}
                         className="mr-2 rounded-full"
                         width={28} height={28}
-                        alt={`${tx.username}'s profile picture`}
+                        alt={`${tx.email.split("@")[0]}'s profile picture`}
                       />
-                      <p>{tx.username}</p>
+                      <p>{tx.email.split("@")[0]}</p>
                     </div>
                     <p className="text-sm text-gray-500">{tx.email}</p>
                   </div>
@@ -76,9 +76,9 @@ export default async function TransactionsTable({ query, currentPage, }:
                       <Image className="mr-2 rounded-full profileImage"
                         src={tx.image_url === null || tx.image_url.trim() === "" ? "/customers/noavatar.png" : tx.image_url}
                         width={28} height={28}
-                        alt={`${tx.username}'s profile picture`}
+                        alt={`${tx.email.split("@")[0]}'s profile picture`}
                       />
-                      <p>{tx.username}</p>
+                      <p>{tx.email.split("@")[0]}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">

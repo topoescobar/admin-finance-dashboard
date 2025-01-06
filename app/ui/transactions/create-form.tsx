@@ -69,7 +69,7 @@ export default function CreateTransactionForm({ users, tokenPrices }: { users: U
                      </option>
                      {users.map((user) => (
                         <option key={user.id} value={user.id}>
-                           {user.username}
+                           {user.email}
                         </option>
                      ))}
                   </select>

@@ -32,11 +32,11 @@ export default async function CustomersTable({ query }:
                           <Image
                             src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
                             className="rounded-full "
-                            alt={`${user.username}'s profile picture`}
+                            alt={`${user.email}'s profile picture`}
                             width={28}
                             height={28}
                           />
-                          <p>{user.username}</p>
+                          <p>{user.email.split('@')[0]}</p>
                         </div>
                       </div>
 
@@ -96,11 +96,11 @@ export default async function CustomersTable({ query }:
                         <Image
                           src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
                           className="rounded-full"
-                          alt={`${user.username}'s profile picture`}
+                          alt={`${user.email.split('@')[0]}'s profile picture`}
                           width={28}
                           height={28}
                         />
-                        <p>{user.username}</p>
+                        <p>{user.email.split('@')[0]}</p>
                       </div>
                     </td>
                     <td className="whitespace-nowrap px-4 py-5 text-sm emailContainerStyle">

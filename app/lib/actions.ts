@@ -24,7 +24,6 @@ const TransactionSchema = z.object({
 const UserSchema = z.object({ 
   email: z.string().email(),
   password: z.string().min(6),
-  username: z.string().min(4),
   image_url: z.string().optional(),
 })
 
@@ -61,7 +60,7 @@ export async function createTransaction(formData: FormData): Promise<void> {
 }
 
 const EditTransactionSchema = TransactionSchema.omit({ tokenprice: true })
-export async function updateTransaction(id: string, formData: FormData) {
+export async function updateTransaction(id: string, formData: FormData): Promise<void> {
   const allUpdateData = Object.fromEntries(formData)
   console.log('allUpdateData', allUpdateData)
   const { userId, value, tokens, vault, status, date } = EditTransactionSchema.parse(allUpdateData)  
@@ -73,7 +72,7 @@ export async function updateTransaction(id: string, formData: FormData) {
       SET userid = ${userId}, value = ${value}, tokens = ${tokens}, vault = ${vault}, status = ${status}, date = ${dateFormatted}
       WHERE id = ${id} `
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Transaction.' }
+    return
   }
 
   revalidatePath('/dashboard/transactions')
@@ -111,11 +110,16 @@ export async function authenticate(
 
 export async function register(formData: FormData) {
   const allData = Object.fromEntries(formData)
-  const { email, username, password } = UserSchema.parse(allData)
+  const { email, password } = UserSchema.parse(allData)
   const hashedPassword = await bcrypt.hash(password, 10)
 
+  const userExists = await sql`SELECT * FROM users WHERE email = ${email}`
+  if (userExists.rows.length > 0) {
+    throw new Error('Email registrado')
+  }
+
   try {
-    await sql `INSERT INTO users (email, username, password) VALUES (${email}, ${username}, ${hashedPassword})`
+    await sql `INSERT INTO users (email, password) VALUES (${email}, ${hashedPassword})`
   } catch (error) {
     console.log(error)
   }
@@ -123,18 +127,18 @@ export async function register(formData: FormData) {
   redirect('/login')
 }
 
-export async function updateUser(id: string, formData: FormData) {
+export async function updateUser(id: string, formData: FormData): Promise<void> {
   const allUpdateData = Object.fromEntries(formData)
-  const { username, email, image_url } = EditUserSchema.parse(allUpdateData)
+  const {  email, image_url } = EditUserSchema.parse(allUpdateData)
   
   console.log('allUpdateData', allUpdateData)
   try {
     await sql`
       UPDATE users
-      SET username = ${username}, email = ${email}, image_url = ${image_url}
+      SET email = ${email}, image_url = ${image_url}
       WHERE id = ${id} `
   } catch (error) {
-    return { message: 'Database Error: Failed to Update Customer.' }
+    return 
   }
 
   revalidatePath('/dashboard/customers')
