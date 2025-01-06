@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 export default function Logo() {
   return (
-    <div className={`${oswald.className} sidebar_logo`} >
+    <div className={`${oswald.className} sidebar_logo mx-auto`} >
       <Image className='hidden md:block' src={'/logo_oscuro.png'} width={250} height={250} alt={'Logo'} />
       <Image className='block md:hidden' src={'/logo_oscuro.png'} width={150} height={150} alt={'Logo'} />
     </div>
