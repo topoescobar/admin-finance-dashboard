@@ -1,5 +1,4 @@
 import { fetchTokenPrice } from '@/app/lib/data'
-import FcaChart from '@/app/ui/funds/fca-chart'
 import PricesTable from '@/app/ui/funds/prices-table'
 import PriceForm from '@/app/ui/funds/price-form'
 import '@/app/ui/funds/styles/funds.css'
