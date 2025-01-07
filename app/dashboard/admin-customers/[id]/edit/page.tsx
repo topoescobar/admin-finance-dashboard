@@ -3,11 +3,12 @@ import Breadcrumbs from '@/app/ui/transactions/breadcrumbs'
 import { fetchUserById, fetchUsers } from '@/app/lib/data'
 import { notFound } from 'next/navigation'
 
-export default async function EditCustomer({ params }: { params: { id: string } }) {
+export default async function EditCustomer(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params
   const { id } = params
   const user = await fetchUserById(id)
   const allUsers = await fetchUsers()
-  
+
   return (
     <div> 
       <Breadcrumbs

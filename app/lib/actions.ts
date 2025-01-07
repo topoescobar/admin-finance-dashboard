@@ -75,8 +75,8 @@ export async function updateTransaction(id: string, formData: FormData): Promise
     return
   }
 
-  revalidatePath('/dashboard/transactions')
-  redirect('/dashboard/transactions')
+  revalidatePath('/dashboard/admin-transactions')
+  redirect('/dashboard/admin-transactions')
 }
 
 export async function deleteTransaction(id: string): Promise<void> {
