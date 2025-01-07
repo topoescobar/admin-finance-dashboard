@@ -13,7 +13,9 @@ export default function Navbar() {
       const localTheme = localStorage.getItem('theme')
       if (localTheme) {
          setTheme(localTheme)
-      } 
+      } else {
+         setTheme('dark')
+      }
    }, [])
 
    useEffect(() => {
