@@ -1,0 +1,13 @@
+{
+   "version": 2,
+   "builds": [
+      {
+         "src": "app/lib/data.ts",
+         "use": "@vercel/static-build"
+      }
+   ],
+   "env": {
+      "POSTGRES_URL": "postgres://default:RkmAdBUi7K9s@ep-shy-breeze-a4wf7xzx-pooler.us-east-1.aws.neon.tech/verceldb?sslmode=require"
+   
+   }
+}

@@ -213,14 +213,14 @@ export default function CreateTransactionForm({ users, tokenPrices }: { users: U
                      </div>
                      <div className="flex items-center">
                         <input
-                           id="paid"
+                           id="executed"
                            name="status"
                            type="radio"
-                           value="paid"
+                           value="executed"
                            className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2 border-gray-800"
                         />
                         <label
-                           htmlFor="paid"
+                           htmlFor="executed"
                            className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                         >
                            Ejecutado <CheckIcon className="h-4 w-4" />

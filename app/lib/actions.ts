@@ -16,7 +16,7 @@ const TransactionSchema = z.object({
   value: z.coerce.number(),
   tokens: z.coerce.number(),
   vault: z.string(),
-  status: z.enum(['pending', 'paid']),
+  status: z.enum(['pending', 'executed']),
   date: z.string(),
   tokenprice: z.string() // lo dejo tipo string por error desde CreateTransactionForm
 })
@@ -55,8 +55,8 @@ export async function createTransaction(formData: FormData): Promise<void> {
     console.log(error)
     return Promise.resolve()
   }
-  revalidatePath('/dashboard/transactions') //revalidar para que no use datos de cache
-  redirect('/dashboard/transactions')
+  revalidatePath('/dashboard/admin-transactions') //revalidar para que no use datos de cache
+  redirect('/dashboard/admin-transactions')
 }
 
 const EditTransactionSchema = TransactionSchema.omit({ tokenprice: true })

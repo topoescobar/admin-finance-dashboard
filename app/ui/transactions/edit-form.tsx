@@ -13,13 +13,20 @@ import { Button } from '@/app/ui/button'
 import { updateTransaction } from '@/app/lib/actions'
 import './styles/transactions.css'
 
-export default function EditTransactionForm({ transaction, customers, }:
-  { transaction: TransactionForm, customers: UserField[] }) {
+interface EditTransactionFormProps {
+  transaction: TransactionForm,
+  customers: UserField[],
+}
+
+export default function EditTransactionForm(
+  { transaction, customers }: EditTransactionFormProps) {
 
   //using bind to ensure that the values passed to the Server Action are encoded.
   const updateWithId = updateTransaction.bind(null, transaction.id)
 
   const formattedDate = transaction.date.toISOString().split('T')[0] //yyyy-mm-dd
+
+
 
   return (
     <form action={updateWithId}>
@@ -29,7 +36,7 @@ export default function EditTransactionForm({ transaction, customers, }:
         <div className='valuesContainer'>
           {/* Customer Name */}
           <div className="mb-4">
-            <label htmlFor="customer" className="mb-2 block text-sm font-medium">
+            <label htmlFor="user" className="mb-2 block text-sm font-medium">
               Elegir cliente
             </label>
             <div className="relative">
@@ -75,7 +82,7 @@ export default function EditTransactionForm({ transaction, customers, }:
 
           {/* DATE */}
           <div className="mb-4">
-            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            <label htmlFor="date" className="mb-2 block text-sm font-medium">
               Fecha
             </label>
             <div className="relative mt-2 rounded-md">
@@ -96,7 +103,7 @@ export default function EditTransactionForm({ transaction, customers, }:
         <div className='valuesContainer'>
           {/* Value Amount */}
           <div className="mb-4">
-            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            <label htmlFor="value" className="mb-2 block text-sm font-medium">
               Cant en USD
             </label>
             <div className="relative mt-2 rounded-md">
@@ -117,7 +124,7 @@ export default function EditTransactionForm({ transaction, customers, }:
 
           {/* Tokens Amount */}
           <div className="mb-4">
-            <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            <label htmlFor="tokens" className="mb-2 block text-sm font-medium">
               Cant Tokens
             </label>
             <div className="relative mt-2 rounded-md">
@@ -162,14 +169,14 @@ export default function EditTransactionForm({ transaction, customers, }:
               </div>
               <div className="flex items-center">
                 <input
-                  id="paid"
+                  id="executed"
                   name="status"
                   type="radio"
-                  value="paid"
-                  defaultChecked={transaction.status === 'paid'}
+                  value="executed"
+                  defaultChecked={transaction.status === 'executed'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
-                <label htmlFor="paid"
+                <label htmlFor="executed"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white" >
                   Ejecutado <CheckIcon className="h-4 w-4" />
                 </label>
@@ -180,7 +187,7 @@ export default function EditTransactionForm({ transaction, customers, }:
       </div>
 
       <div className="mt-6 flex justify-end gap-4">
-        <Link href="/dashboard/transactions"
+        <Link href="/dashboard/admin-transactions"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200">
           Cancelar
         </Link>

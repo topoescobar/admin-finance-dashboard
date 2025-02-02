@@ -11,10 +11,10 @@ export default async function CreateTransaction() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Transacciones', href: '/dashboard/transactions' },
+          { label: 'Transacciones', href: '/dashboard/admin-transactions' },
           {
             label: 'Nueva',
-            href: '/dashboard/transactions/create',
+            href: '/dashboard/admin-transactions/create',
             active: true,
           },
         ]}

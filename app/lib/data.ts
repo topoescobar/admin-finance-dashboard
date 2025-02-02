@@ -60,27 +60,26 @@ export async function fetchLatestTransactions() {
       SELECT SUM(tokens) AS total_tokens
       FROM transactions
       WHERE userid = ${userid} and VAULT = 'FCD'`
-    const transactionStatusPromise = sql`
+    const valueStatusPromise = sql`
       SELECT 
-        SUM(CASE WHEN vault = 'FCA' AND status = 'paid' THEN value ELSE 0 END) AS "sumDepositsFCA",
-        SUM(CASE WHEN vault = 'FCA' AND status = 'pending' THEN value ELSE 0 END) AS "sumPendingFCA",
-        SUM(CASE WHEN vault = 'FCD' AND status = 'paid' THEN value ELSE 0 END) AS "sumDepositsFCD",
-        SUM(CASE WHEN vault = 'FCD' AND status = 'pending' THEN value ELSE 0 END) AS "sumPendingFCD"
+        SUM(CASE WHEN vault = 'FCA' AND status = 'executed' THEN value ELSE 0 END) AS "executedValueFCA",
+        SUM(CASE WHEN vault = 'FCA' AND status = 'pending' THEN value ELSE 0 END) AS "pendingValueFCA",
+        SUM(CASE WHEN vault = 'FCD' AND status = 'executed' THEN value ELSE 0 END) AS "executedValueFCD",
+        SUM(CASE WHEN vault = 'FCD' AND status = 'pending' THEN value ELSE 0 END) AS "pendingValueFCD"
       FROM transactions WHERE userid = ${userid}`
 
     const data = await Promise.all([ // initiate all promises at the same time, otherwise they start in a cascade.
-      totalTokensPromiseFCA,
-      totalTokensPromiseFCD,
-      transactionStatusPromise,
+      totalTokensPromiseFCA, //data[0]
+      totalTokensPromiseFCD, //data[1]
+      valueStatusPromise,   //data[2]
     ])
-    console.log('fetching card data...')
     return {
-      totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0,
+      totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0, 
       totalTokensFCD: Number(data[1].rows[0].total_tokens) ?? 0,
-      totalDepositsFCA: Number(data[2].rows[0].sumDepositsFCA) ?? 0,
-      totalPendingFCA: Number(data[2].rows[0].sumPendingFCA) ?? 0,
-      totalDepositsFCD: Number(data[2].rows[0].sumDepositsFCD) ?? 0,
-      totalPendingFCD: Number(data[2].rows[0].sumPendingFCD) ?? 0,
+      executedValueFCA: Number(data[2].rows[0].executedValueFCA) ?? 0,
+      pendingValueFCA: Number(data[2].rows[0].pendingValueFCA) ?? 0,
+      executedValueFCD: Number(data[2].rows[0].executedValueFCD) ?? 0,
+      pendingValueFCD: Number(data[2].rows[0].pendingValueFCD) ?? 0,
     }
   } catch (error) {
     console.error('Database Error:', error)
@@ -193,7 +192,7 @@ export async function fetchFilteredUsers(query: string) {
 		  users.image_url,
 		  COUNT(transactions.id) AS total_transactions,
 		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.tokens ELSE 0 END) AS total_tokens
+		  SUM(CASE WHEN transactions.status = 'executed' THEN transactions.tokens ELSE 0 END) AS total_tokens
 		FROM users
     LEFT JOIN transactions ON users.id = transactions.userid
 		WHERE
@@ -227,7 +226,7 @@ export async function fetchFilteredCustomers(query: string) {
 		  customers.image_url,
 		  COUNT(transactions.id) AS total_transactions,
 		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN transactions.status = 'paid' THEN transactions.tokens ELSE 0 END) AS total_tokens
+		  SUM(CASE WHEN transactions.status = 'executed' THEN transactions.tokens ELSE 0 END) AS total_tokens
 		FROM customers
 		LEFT JOIN transactions ON customers.id = transactions.customerid
 		WHERE

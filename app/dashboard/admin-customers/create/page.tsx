@@ -6,10 +6,10 @@ export default function CreateCustomer() {
     <div> 
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Clientes', href: '/dashboard/customers' },
+          { label: 'Clientes', href: '/dashboard/admin-customers' },
           {
             label: 'Crear nuevo',
-            href: '/dashboard/customers/create',
+            href: '/dashboard/admin-customers/create',
             active: true,
           },
         ]}
