@@ -33,7 +33,7 @@ export default async function TransactionsTable({ query, currentPage, }:
                     </div>
                     <p className="text-sm text-gray-500">{tx.email}</p>
                   </div>
-                  <TransactionStatus status={tx.status} />
+                  <TransactionStatus status={tx.status} value={tx.value} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div>
@@ -94,7 +94,7 @@ export default async function TransactionsTable({ query, currentPage, }:
                     {formatDateToLocal(tx.date)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <TransactionStatus status={tx.status} />
+                    <TransactionStatus status={tx.status} value={tx.value} />
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

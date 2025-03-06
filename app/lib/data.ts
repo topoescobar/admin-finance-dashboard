@@ -53,11 +53,11 @@ export async function fetchLatestTransactions() {
  export async function fetchCardData(userid: string) {
   try {
     const totalTokensPromiseFCA = sql`
-      SELECT SUM(tokens) AS total_tokens
+      SELECT COALESCE(SUM(tokens), 0) AS total_tokens
       FROM transactions
       WHERE userid = ${userid} and VAULT = 'FCA'`
     const totalTokensPromiseFCD = sql`
-      SELECT SUM(tokens) AS total_tokens
+      SELECT COALESCE(SUM(tokens), 0) AS total_tokens
       FROM transactions
       WHERE userid = ${userid} and VAULT = 'FCD'`
     const valueStatusPromise = sql`
