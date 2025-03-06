@@ -1,49 +1,48 @@
 'use client'
+import { LinksToRender } from '@/app/lib/definitions'
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
   BanknotesIcon,
+  DocumentTextIcon,
+  QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 
-// Map of links to display in the side navigation.
-const adminLinks = [
-  { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-  { name: 'Transacciones', href: '/dashboard/transactions', icon: DocumentDuplicateIcon },
-  { name: 'Dashboard (Admin)', href: '/dashboard/admin-dashboard', icon: HomeIcon },
-  { name: 'Transacciones (Admin)', href: '/dashboard/admin-transactions', icon: DocumentDuplicateIcon,},
-  { name: 'Clientes (Admin)', href: '/dashboard/admin-customers', icon: UserGroupIcon },
-  { name: 'Fondos (Admin)', href: '/dashboard/admin-funds', icon: BanknotesIcon },
-]
-
-const userLinks = [
-  { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-  { name: 'Transacciones', href: '/dashboard/transactions', icon: DocumentDuplicateIcon },
-]
-
-export default function NavLinks({ role }: { role: string }) {
+export default function NavLinks({ linksToRender }: { linksToRender : LinksToRender[]}  ) {
   const pathname = usePathname()
   const defaultStyle = 'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 dark:bg-indigo-800 dark:text-white dark:hover:bg-indigo-700'
 
-  const linksToRender = role === 'admin' ? adminLinks : userLinks
   return (
     <>
       {linksToRender.map((link) => {
-        const LinkIcon = link.icon
         return (
           <Link
             key={link.name}
             href={link.href}
             className={`${defaultStyle} ${pathname === link.href ? 'bg-sky-200 text-blue-600 dark:bg-indigo-500 border' : ''}`}
           >
-            <LinkIcon className="w-6" />
+            <Icon linkIcon={link.icon} />
             <p className="hidden md:block">{link.name}</p>
           </Link>
         )
       })}
     </>
+  )
+}
+
+export function Icon({ linkIcon }: { linkIcon: string }) {
+const LinkIcon = 
+  linkIcon === 'HomeIcon' ? HomeIcon :
+  linkIcon === 'UserGroupIcon' ? UserGroupIcon :
+  linkIcon === 'DocumentTextIcon' ? DocumentTextIcon :
+  linkIcon === 'BanknotesIcon' ? BanknotesIcon : QuestionMarkCircleIcon
+
+  return (
+    <div>
+      <LinkIcon className="w-6" />
+    </div>
   )
 }

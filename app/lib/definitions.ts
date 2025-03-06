@@ -119,3 +119,9 @@ export type Investment = {
   executedValueFCD: number,
   pendingValueFCD: number,
 }
+
+export type LinksToRender = {
+  name : string,
+  href : string,
+  icon : any
+}

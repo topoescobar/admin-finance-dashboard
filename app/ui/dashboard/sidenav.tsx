@@ -9,6 +9,23 @@ export default async function SideNav() {
   const authData = await auth()
   const { id, email, image_url, role} = await getUser(authData?.user?.email ?? '')
 
+  // Map of links to display in the side navigation.
+  const adminLinks = [
+    { name: 'Inicio', href: '/dashboard', icon: 'HomeIcon' },
+    { name: 'Transacciones', href: '/dashboard/transactions', icon: 'DocumentTextIcon' },
+    { name: 'Dashboard (Admin)', href: '/dashboard/admin-dashboard', icon: 'HomeIcon' },
+    { name: 'Transacciones (Admin)', href: '/dashboard/admin-transactions', icon: 'DocumentTextIcon', },
+    { name: 'Clientes (Admin)', href: '/dashboard/admin-customers', icon: 'UserGroupIcon' },
+    { name: 'Fondos (Admin)', href: '/dashboard/admin-funds', icon: 'BanknotesIcon' },
+  ]
+
+  const userLinks = [
+    { name: 'Inicio', href: '/dashboard', icon: 'HomeIcon' },
+    { name: 'Transacciones', href: '/dashboard/transactions', icon: 'DocumentTextIcon' },
+  ]
+
+  const links = role === 'admin' ? adminLinks : userLinks
+
   return (
     <div className="flex h-full flex-col px-3 py-4 md:px-2 dark:bg-slate-800">
       <Link className="mb-2 flex h-20 items-end justify-center rounded-md bg-blue-600 p-4 md:h-40 dark:bg-indigo-900" href="/" >
@@ -21,7 +38,7 @@ export default async function SideNav() {
         <div className='ml-2 hidden md:block'>
           <span>{email.split('@')[0]} </span> 
         </div>
-        <NavLinks role={role} />
+        <NavLinks linksToRender={links} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block dark:bg-gray-800"></div>
         <form action={async () => {
           'use server'
