@@ -19,6 +19,7 @@ export type Transaction = {
   // In TypeScript, this is called a string union type.
   // It means that the "status" property can only be one of the two strings: 'pending' or 'executed'.
   status: 'pending' | 'executed'
+  notes: string
 }
 
 export type UserTransaction = Omit<Transaction, 'customer_id'>

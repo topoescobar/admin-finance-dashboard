@@ -25,7 +25,7 @@ const DashboardPage = async () => {
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <Suspense fallback={<LatestTransactionsSkeleton />}>
-          <UserSummary users = {users} lastPrice = {lastTokenPrice} />
+          {/*           <UserSummary users = {users} lastPrice = {lastTokenPrice} /> */}
         </Suspense>
         <Suspense fallback={<RevenueChartSkeleton />}>
           <RevenueChart />

@@ -27,7 +27,7 @@ export default async function UserTransactionsTable({ query, currentPage, userid
                                  <p>{dateToLocal(tx.date)}</p>
                               </div>
                            </div>
-                           <TransactionStatus status={tx.status} />
+                           <TransactionStatus status={tx.status} value={tx.value} />
                         </div>
                         <div className="flex w-full items-center justify-between pt-4">
                            <div>
@@ -44,6 +44,9 @@ export default async function UserTransactionsTable({ query, currentPage, userid
                                     <CurrencyBangladeshiIcon className='h-6 w-6 mr-2' />
                                     Cant. tokens: {tx.tokens}
                                  </p>
+                              </span>
+                              <span>
+                                 {tx.notes && <p className="text-sm text-gray-400">{tx.notes}</p>}
                               </span>
                            </div>
                            <div className="flex justify-end gap-2">
@@ -87,7 +90,10 @@ export default async function UserTransactionsTable({ query, currentPage, userid
                               {tx.vault}
                            </td>
                            <td className="whitespace-nowrap px-3 py-3">
-                              <TransactionStatus status={tx.status} />
+                              <TransactionStatus status={tx.status} value={tx.value} />
+                              <div>
+                                 {tx.notes && <p className="text-sm text-gray-400">{tx.notes}</p>}
+                              </div>
                            </td>
                         </tr>
                      ))}

@@ -328,7 +328,8 @@ export async function fetchUserTransactions(query: string, currentPage: number, 
         transactions.tokens,
         transactions.vault,
         transactions.date,
-        transactions.status
+        transactions.status,
+        transactions.notes
       FROM transactions
       WHERE
         transactions.userid = ${userid}
