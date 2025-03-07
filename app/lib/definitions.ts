@@ -121,8 +121,16 @@ export type Investment = {
   pendingValueFCD: number,
 }
 
+export type InvestmentTable = LatestTransaction & {
+  fca_tokens: number,
+  fca_deposited_usd: number,
+  fcd_tokens: number,
+  fcd_deposited_usd: number
+}
+
 export type LinksToRender = {
   name : string,
   href : string,
   icon : any
 }
+

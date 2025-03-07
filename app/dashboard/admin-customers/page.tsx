@@ -1,5 +1,5 @@
 import { CreateCustomer } from '@/app/ui/customers/buttons'
-import CustomersTable from '@/app/ui/customers/table'
+import CustomersTable from '@/app/ui/customers/customers-table'
 import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
 

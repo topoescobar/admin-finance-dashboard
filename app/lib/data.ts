@@ -10,9 +10,13 @@ import {
   UserField,
   Transaction,
   UserTransaction,
+  Investment,
+  InvestmentTable
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
+import { unstable_cache as cache } from 'next/cache'
+
 
 //CONFIG
 const ITEMS_PER_PAGE = 6 //items for pagination
@@ -50,7 +54,7 @@ export async function fetchLatestTransactions() {
   }
 }
 
- export async function fetchCardData(userid: string) {
+export async function fetchCardData(userid: string) {
   try {
     const totalTokensPromiseFCA = sql`
       SELECT COALESCE(SUM(tokens), 0) AS total_tokens
@@ -74,7 +78,7 @@ export async function fetchLatestTransactions() {
       valueStatusPromise,   //data[2]
     ])
     return {
-      totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0, 
+      totalTokensFCA: Number(data[0].rows[0].total_tokens) ?? 0,
       totalTokensFCD: Number(data[1].rows[0].total_tokens) ?? 0,
       executedValueFCA: Number(data[2].rows[0].executedValueFCA) ?? 0,
       pendingValueFCA: Number(data[2].rows[0].pendingValueFCA) ?? 0,
@@ -139,7 +143,7 @@ export async function fetchTransactionById(id: string) {
       // Convert amount from cents to dollars
       amount: transaction.value / 100,
     }))
-    
+
     return transaction[0]
   } catch (error) {
     console.error('Database Error:', error)
@@ -182,43 +186,10 @@ export async function fetchUsers() {
   }
 }
 
-export async function fetchFilteredUsers(query: string) {
-  //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
-  try {
-    const data = await sql`
-		SELECT
-		  users.id,
-		  users.email,
-		  users.image_url,
-		  COUNT(transactions.id) AS total_transactions,
-		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN transactions.status = 'executed' THEN transactions.tokens ELSE 0 END) AS total_tokens
-		FROM users
-    LEFT JOIN transactions ON users.id = transactions.userid
-		WHERE
-      users.email ILIKE ${`%${query}%`}
-		GROUP BY users.id, users.email, users.image_url 
-		ORDER BY users.email ASC
-	  `// Todos los campos usados en SELECT deben estar en el GROUP BY
-
-    /*    const customers = data.rows.map((customer) => ({
-         ...customer,
-         total_pending: Number(customer.total_pending), //valor en usd a incorporar
-         total_tokens: Number(customer.total_tokens),
-       })) */
-
-    return data.rows
-
-  } catch (err) {
-    console.error('Database Error:', err)
-    throw new Error('Failed to fetch customer table.')
-  }
-}
-
 export async function fetchFilteredCustomers(query: string) {
   //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
   try {
-    const data = await sql `
+    const data = await sql`
 		SELECT
 		  customers.id,
 		  customers.name,
@@ -235,17 +206,34 @@ export async function fetchFilteredCustomers(query: string) {
 		GROUP BY customers.id, customers.name, customers.email, customers.image_url
 		ORDER BY customers.name ASC
 	  `
- /*    const customers = data.rows.map((customer) => ({
-      ...customer,
-      total_pending: Number(customer.total_pending), //valor en usd a incorporar
-      total_tokens: Number(customer.total_tokens),
-    })) */
+    return data.rows
 
-      return data.rows
-    
   } catch (err) {
     console.error('Database Error:', err)
     throw new Error('Failed to fetch customer table.')
+  }
+}
+
+export async function fetchCustomersData() {
+  try {
+    const investmentData = await sql<InvestmentTable>`
+      SELECT 
+        u.id,
+        u.email,
+        u.image_url,
+        COALESCE(SUM(t.tokens) FILTER (WHERE t.vault = 'FCA'), 0) AS fca_tokens,
+        COALESCE(SUM(t.value) FILTER (WHERE t.vault = 'FCA'), 0) AS fca_deposited_usd,
+        COALESCE(SUM(t.tokens) FILTER (WHERE t.vault = 'FCD'), 0) AS fcd_tokens,
+        COALESCE(SUM(t.value) FILTER (WHERE t.vault = 'FCD'), 0) AS fcd_deposited_usd
+      FROM users u
+      LEFT JOIN transactions t ON u.id = t.userid
+      GROUP BY u.id, u.email, u.image_url;
+    `
+    return investmentData.rows
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch customer investment data..')
   }
 }
 
@@ -305,8 +293,9 @@ export async function fetchLastTokensPrices() {
     WHERE (tokenname = 'FCA' AND date = (SELECT MAX(date) FROM tokenprices WHERE tokenname = 'FCA'))
     OR (tokenname = 'FCD' AND date = (SELECT MAX(date) FROM tokenprices WHERE tokenname = 'FCD'))
     ORDER BY tokenname ASC
+    LIMIT 2
     `
-    const FCAprice = Number(data.rows[0].price) 
+    const FCAprice = Number(data.rows[0].price)
     const FCDprice = Number(data.rows[1].price)
 
     return { FCAprice, FCDprice }
@@ -316,9 +305,14 @@ export async function fetchLastTokensPrices() {
     throw new Error('Failed to fetch last token prices.')
   }
 }
+//funcion para dejar cacheado el ultimo precio para todos los usuarios
+export const cachedLastPrices = cache(fetchLastTokensPrices, ['tokenprices'], {
+  revalidate: 43200, // 12 hours
+  tags: ['tokenprices'],
+})
 
 export async function fetchUserTransactions(query: string, currentPage: number, userid: string) {
-  console.log('fetchUserTransactions',query, currentPage, userid)
+  console.log('fetchUserTransactions', query, currentPage, userid)
   const offset = (currentPage - 1) * ITEMS_PER_PAGE
   try {
     const transactions = await sql<UserTransaction> `
@@ -335,7 +329,7 @@ export async function fetchUserTransactions(query: string, currentPage: number, 
         transactions.userid = ${userid}
       ORDER BY transactions.date DESC
       `
-      // LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset} *retiro temporal de paginacion
+    // LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset} *retiro temporal de paginacion
     return transactions.rows
 
   } catch (error) {
@@ -363,3 +357,4 @@ export async function fetchUserTxPages(query: string, userid: string) {
     throw new Error('Failed to fetch total number of transactions.')
   }
 }
+

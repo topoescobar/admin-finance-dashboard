@@ -2,14 +2,15 @@ import Image from 'next/image'
 import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
 import './styles/customers.css'
-import {  fetchFilteredUsers } from '@/app/lib/data'
-import { DeleteCustomer, UpdateCustomer } from './buttons'  
+import { cachedLastPrices, fetchCustomersData, fetchLastTokensPrices } from '@/app/lib/data'
+import { DeleteCustomer, UpdateCustomer } from './buttons'
 
 export default async function CustomersTable({ query }:
   { query: string }) {
 
-  // const customers = await fetchFilteredCustomers(query)
-  const users = await fetchFilteredUsers(query)
+  const usersInvestments = await fetchCustomersData()
+  console.log('users',usersInvestments)
+  const {FCAprice, FCDprice} = await cachedLastPrices()
 
   return (
 
@@ -19,7 +20,7 @@ export default async function CustomersTable({ query }:
           <div className="overflow-hidden rounded-md bg-gray-50 p-2 md:pt-0 dark:bg-gray-800">
 
             {/* MOBILE */}
-            <div className="md:hidden">
+            {/*        <div className="md:hidden">
               {users?.map((user) => (
                 <div
                   key={user.id}
@@ -62,36 +63,24 @@ export default async function CustomersTable({ query }:
                 </div>
               ))}
             </div>
-
+ */}
             {/* DESKTOP */}
-            <table className="hidden min-w-full rounded-md text-gray-900 md:table">
-              <thead className="rounded-md bg-gray-50 text-left text-sm font-normal dark:bg-gray-800 dark:text-gray-100">
+            <table className="hidden min-w-full text-gray-900 md:table dark:text-white">
+              <thead className="rounded-lg text-left text-sm font-normal">
                 <tr>
-                  <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                    Nombre de usuario
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Email
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Total Movs
-                  </th>
-                  <th scope="col" className="px-3 py-5 font-medium">
-                    Total Pendiente
-                  </th>
-                  <th scope="col" className="px-4 py-5 font-medium">
-                    Total Tokens
-                  </th>
-                  <th scope="col" className="px-4 py-5 font-medium">
-                    Acciones
-                  </th>
+                  <th scope="col" className="px-4 py-5 font-medium sm:pl-6"> Email </th>
+                  <th scope="col" className="px-3 py-5 font-medium"> FCA val actual</th>
+                  <th scope="col" className="px-3 py-5 font-medium"> FCA pnl </th>
+                  <th scope="col" className="px-4 py-5 font-medium"> FCD val actual</th>
+                  <th scope="col" className="px-4 py-5 font-medium"> FCD pnl </th>
+                  <th scope="col" className="px-4 py-5 font-medium"> Acciones </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-200 text-gray-100 dark:bg-slate-400 dark:text-slate-800">
-                {users?.map((user) => (
-                  <tr key={user.id} className="group">
-                    <td className="whitespace-nowrap py-5 pl-4 pr-3 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
+              <tbody className="bg-white dark:bg-slate-700">
+                {usersInvestments?.map((user) => (
+                  <tr key={user.id} className="group w-full border-b py-2 text-sm">
+                    <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
                       <div className="flex items-center gap-3">
                         <Image
                           src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
@@ -100,22 +89,24 @@ export default async function CustomersTable({ query }:
                           width={28}
                           height={28}
                         />
-                        <p>{user.email.split('@')[0]}</p>
+                        <p className='emailContainerStyle'>{user.email}</p>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-5 text-sm emailContainerStyle">
-                      {user.email}
+                    <td className="whitespace-nowrap px-3 py-3 text-sm">
+                      <div>{user.fca_tokens} tokens </div>
+                      <div>{(user.fca_tokens * FCAprice).toFixed(2)} USD</div>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-5 text-sm">
-                      {user.total_transactions}
+                    <td className="whitespace-nowrap px-3 py-3 text-sm">
+                      {(user.fca_tokens * FCAprice - user.fca_deposited_usd).toFixed(2)} USD
                     </td>
-                    <td className="whitespace-nowrap px-4 py-5 text-sm">
-                      {user.total_pending}
+                    <td className="whitespace-nowrap px-3 py-3 text-sm">
+                      <div>{user.fcd_tokens} tokens </div>
+                      <div>{(user.fcd_tokens * FCDprice).toFixed(2)} USD</div>
                     </td>
-                    <td className="whitespace-nowrap px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
-                      {user.total_tokens}
+                    <td className='whitespace-nowrap px-3 py-3 text-sm'>
+                      {(user.fcd_tokens * FCDprice - user.fcd_deposited_usd).toFixed(2)} USD
                     </td>
-                    <td className="whitespace-nowrap px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
+                    <td className="whitespace-nowrap px-3 py-3 text-sm">
                       <div className="flex justify-end gap-3">
                         <UpdateCustomer id={user.id} />
                       </div>
