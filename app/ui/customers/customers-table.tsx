@@ -2,13 +2,13 @@ import Image from 'next/image'
 import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
 import './styles/customers.css'
-import { cachedLastPrices, fetchCustomersData, fetchLastTokensPrices } from '@/app/lib/data'
+import { cachedLastPrices, fetchUsersInvestment } from '@/app/lib/data'
 import { DeleteCustomer, UpdateCustomer } from './buttons'
 
 export default async function CustomersTable({ query }:
   { query: string }) {
 
-  const usersInvestments = await fetchCustomersData(query)
+  const usersInvestments = await fetchUsersInvestment(query)
   const {FCAprice, FCDprice} = await cachedLastPrices()
 
   return (

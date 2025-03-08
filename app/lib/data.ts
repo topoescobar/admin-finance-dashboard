@@ -23,16 +23,6 @@ const ITEMS_PER_PAGE = 20 //items for pagination
 
 //call these functions on the server side to protect the database, without 'use server' It is agnostic
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
-export async function fetchRevenue() {
-
-  try {
-    const data = await sql<Revenue>`SELECT * FROM revenue`
-    return data.rows
-  } catch (error) {
-    console.error('Database Error:', error)
-    throw new Error('Failed to fetch revenue data.')
-  }
-}
 
 export async function fetchLatestTransactions() {
   try {
@@ -188,35 +178,7 @@ export async function fetchUsers() {
   }
 }
 
-export async function fetchFilteredCustomers(query: string) {
-  //unstable_noStore() // se usa para busqueda, deberia funcionar bien con cache
-  try {
-    const data = await sql`
-		SELECT
-		  customers.id,
-		  customers.name,
-		  customers.email,
-		  customers.image_url,
-		  COUNT(transactions.id) AS total_transactions,
-		  SUM(CASE WHEN transactions.status = 'pending' THEN transactions.value ELSE 0 END) AS total_pending,
-		  SUM(CASE WHEN transactions.status = 'executed' THEN transactions.tokens ELSE 0 END) AS total_tokens
-		FROM customers
-		LEFT JOIN transactions ON customers.id = transactions.customerid
-		WHERE
-		  customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`}
-		GROUP BY customers.id, customers.name, customers.email, customers.image_url
-		ORDER BY customers.name ASC
-	  `
-    return data.rows
-
-  } catch (err) {
-    console.error('Database Error:', err)
-    throw new Error('Failed to fetch customer table.')
-  }
-}
-
-export async function fetchCustomersData(query: string) {
+export async function fetchUsersInvestment(query: string) {
   try {
     const investmentData = await sql<InvestmentTable>`
       SELECT 

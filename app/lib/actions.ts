@@ -1,6 +1,6 @@
 'use server'
-//todas las funciones bajo 'use server' se ejecutan en el servidor y no son accesibles por el cliente.
-//se usara para las funciones que modifican la BD
+//todas las funciones bajo 'use server' se ejecutan en el servidor, no son accesibles para el cliente
+//en general llamadas desde componentes que usan 'use client' modificando la DB
 import { sql } from '@vercel/postgres'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'

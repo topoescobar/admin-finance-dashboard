@@ -2,7 +2,6 @@ import { generateYAxis } from '@/app/lib/utils'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { lusitana } from '@/app/ui/fonts'
 import { Revenue } from '@/app/lib/definitions'
-import { fetchRevenue } from '@/app/lib/data'
 
 // This component is representational only.
 // For data visualization UI, check out:
@@ -11,7 +10,22 @@ import { fetchRevenue } from '@/app/lib/data'
 // https://airbnb.io/visx/
 
 export default async function RevenueChart() {
-  const revenue = await fetchRevenue()
+
+  const revenue = [
+    { month: 'Jan', revenue: 2000},
+    { month: 'Feb', revenue: 3000},
+    { month: 'Mar', revenue: 4000},
+    { month: 'Apr', revenue: 3000},
+    { month: 'May', revenue: 2000},
+    { month: 'Jun', revenue: 5000},
+    { month: 'Jul', revenue: 8000},
+    { month: 'Aug', revenue: 1000},
+    { month: 'Sep', revenue: 1000},
+    { month: 'Oct', revenue: 2000},
+    { month: 'Nov', revenue: 1200},
+    { month: 'Dec', revenue: 1300},
+  ]
+
   const chartHeight = 350
   const { yAxisLabels, topLabel } = generateYAxis(revenue)
 
