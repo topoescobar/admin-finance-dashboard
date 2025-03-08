@@ -8,8 +8,7 @@ import { DeleteCustomer, UpdateCustomer } from './buttons'
 export default async function CustomersTable({ query }:
   { query: string }) {
 
-  const usersInvestments = await fetchCustomersData()
-  console.log('users',usersInvestments)
+  const usersInvestments = await fetchCustomersData(query)
   const {FCAprice, FCDprice} = await cachedLastPrices()
 
   return (

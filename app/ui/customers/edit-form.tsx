@@ -3,6 +3,7 @@
 import { User, UserField } from '@/app/lib/definitions'
 import {
   AtSymbolIcon,
+  KeyIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -38,6 +39,26 @@ export default function EditCustomerForm({ user, allUsers, }:
               </div>
             </div>
           </div>
+
+          <div className="mb-4">
+            <label htmlFor="password" className="mb-2 block text-sm font-medium">
+              Cambiar contraseña
+            </label>
+            <div className="relative mt-2 rounded-md">
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Nueva contraseña"
+                  className="peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+                />
+                <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+          </div>
+
+
           {/* Image Amount */}
           <div className="mb-4">
             <label htmlFor="image_url" className="mb-2 block text-sm font-medium">

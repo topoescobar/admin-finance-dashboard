@@ -19,7 +19,7 @@ import { unstable_cache as cache } from 'next/cache'
 
 
 //CONFIG
-const ITEMS_PER_PAGE = 6 //items for pagination
+const ITEMS_PER_PAGE = 20 //items for pagination
 
 //call these functions on the server side to protect the database, without 'use server' It is agnostic
 //if you need to manipulate the data call on the server and pass it as props to a child component running on the client.
@@ -103,6 +103,7 @@ export async function fetchFilteredTransactions(query: string, currentPage: numb
         transactions.vault,
         transactions.date,
         transactions.status,
+        transactions.notes,
         users.email,
         users.image_url
       FROM transactions
@@ -134,7 +135,8 @@ export async function fetchTransactionById(id: string) {
         transactions.vault,
         transactions.status,
         transactions.date,
-        transactions.userid
+        transactions.userid,
+        transactions.notes
       FROM transactions
       WHERE transactions.id = ${id};
     `
@@ -214,7 +216,7 @@ export async function fetchFilteredCustomers(query: string) {
   }
 }
 
-export async function fetchCustomersData() {
+export async function fetchCustomersData(query: string) {
   try {
     const investmentData = await sql<InvestmentTable>`
       SELECT 
@@ -227,6 +229,9 @@ export async function fetchCustomersData() {
         COALESCE(SUM(t.value) FILTER (WHERE t.vault = 'FCD'), 0) AS fcd_deposited_usd
       FROM users u
       LEFT JOIN transactions t ON u.id = t.userid
+      WHERE
+        u.email ILIKE ${`%${query}%`} OR
+        u.id::text ILIKE ${`%${query}%`}
       GROUP BY u.id, u.email, u.image_url;
     `
     return investmentData.rows

@@ -18,7 +18,8 @@ const TransactionSchema = z.object({
   vault: z.string(),
   status: z.enum(['pending', 'executed']),
   date: z.string(),
-  tokenprice: z.string() // lo dejo tipo string por error desde CreateTransactionForm
+  tokenprice: z.string(), // lo dejo tipo string por error desde CreateTransactionForm
+  notes: z.string().optional()
 })
 
 const UserSchema = z.object({ 
@@ -41,15 +42,15 @@ const FormTransactionSchema = TransactionSchema.omit({ id: true })
 export async function createTransaction(formData: FormData): Promise<void> {
   
   const allFormData = Object.fromEntries(formData.entries()) //todos los datos del formulario
-  const { userId, value, tokens, vault, status, date, tokenprice } = FormTransactionSchema.parse(allFormData) //data validadada
+  const { userId, value, tokens, vault, status, date, tokenprice, notes } = FormTransactionSchema.parse(allFormData) //data validadada
   //formatear fecha, el 2do elemento del split es la hora. en la base de datos formato (mm/dd/yyyy)
   const dateFormatted = new Date(date).toISOString().split('T')[0]
   const tokenpriceFormatted = parseFloat(tokenprice).toFixed(3)
 
   try {
-    await sql
-      `INSERT INTO transactions ( value, tokens, vault, status, date, userid, tokenprice)
-      VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId}, ${tokenpriceFormatted})` 
+    await sql`
+      INSERT INTO transactions ( value, tokens, vault, status, date, userid, tokenprice, notes)
+      VALUES (${value}, ${tokens}, ${vault}, ${status}, ${dateFormatted}, ${userId}, ${tokenpriceFormatted}, ${notes})` 
   } catch (error) {
     console.log('Database Error: Failed to Create Transaction.')
     console.log(error)
@@ -63,13 +64,14 @@ const EditTransactionSchema = TransactionSchema.omit({ tokenprice: true })
 export async function updateTransaction(id: string, formData: FormData): Promise<void> {
   const allUpdateData = Object.fromEntries(formData)
   console.log('allUpdateData', allUpdateData)
-  const { userId, value, tokens, vault, status, date } = EditTransactionSchema.parse(allUpdateData)  
+  const { userId, value, tokens, vault, status, date, notes } = EditTransactionSchema.parse(allUpdateData)  
   const dateFormatted = new Date(date).toISOString().split('T')[0]
 
   try {
     await sql`
       UPDATE transactions
-      SET userid = ${userId}, value = ${value}, tokens = ${tokens}, vault = ${vault}, status = ${status}, date = ${dateFormatted}
+      SET userid = ${userId}, value = ${value}, tokens = ${tokens}, 
+        vault = ${vault}, status = ${status}, date = ${dateFormatted}, notes = ${notes}
       WHERE id = ${id} `
   } catch (error) {
     return
@@ -129,13 +131,14 @@ export async function register(formData: FormData) {
 
 export async function updateUser(id: string, formData: FormData): Promise<void> {
   const allUpdateData = Object.fromEntries(formData)
-  const {  email, image_url } = EditUserSchema.parse(allUpdateData)
+  const {  email, image_url, password } = UserSchema.parse(allUpdateData)
+  const hashedPassword = await bcrypt.hash(password, 10)
   
   console.log('allUpdateData', allUpdateData)
   try {
     await sql`
       UPDATE users
-      SET email = ${email}, image_url = ${image_url}
+      SET email = ${email}, image_url = ${image_url}, password = ${hashedPassword}
       WHERE id = ${id} `
   } catch (error) {
     return 

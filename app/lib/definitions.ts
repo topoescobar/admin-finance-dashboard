@@ -85,6 +85,7 @@ export type TransactionForm = {
   status: 'pending' | 'executed'
   date: Date
   userid: string
+  notes: string
 }
 
 export type TokenPriceTable = {

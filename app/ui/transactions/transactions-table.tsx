@@ -95,6 +95,7 @@ export default async function TransactionsTable({ query, currentPage, }:
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     <TransactionStatus status={tx.status} value={tx.value} />
+                    <div className='text-xs text-gray-300'>{tx.notes}</div>
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

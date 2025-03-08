@@ -6,6 +6,7 @@ import {
   ClockIcon,
   CurrencyBangladeshiIcon,
   CurrencyDollarIcon,
+  DocumentIcon,
   UserCircleIcon,
 } from '@heroicons/react/24/outline'
 import Link from 'next/link'
@@ -23,10 +24,7 @@ export default function EditTransactionForm(
 
   //using bind to ensure that the values passed to the Server Action are encoded.
   const updateWithId = updateTransaction.bind(null, transaction.id)
-
   const formattedDate = transaction.date.toISOString().split('T')[0] //yyyy-mm-dd
-
-
 
   return (
     <form action={updateWithId}>
@@ -140,6 +138,25 @@ export default function EditTransactionForm(
                 />
                 <CurrencyBangladeshiIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="notes" className="mb-2 block text-sm font-medium">
+            Notas
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                id="notes"
+                name="notes"
+                type="text"
+                defaultValue={transaction.notes}
+                placeholder="Sin notas"
+                className=" w-full peer block min-w-2 rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500 dark:text-gray-900"
+              />
+              <DocumentIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
