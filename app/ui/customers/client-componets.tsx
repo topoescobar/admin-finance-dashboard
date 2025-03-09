@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 
 export function CopyText( {text} : {text: string}) {
@@ -12,7 +13,7 @@ export function CopyText( {text} : {text: string}) {
       onClick={() => copyToClipboard(text)}
       onMouseEnter={() => setShowTooltip(true)}
       onMouseLeave={() => setShowTooltip(false)} >
-      <p className="text-sm text-gray-500 emailContainerStyle" >
+      <p className="text-sm dark:text-slate-100 dark:hover:text-slate-400 emailContainerStyle" >
         {text}
         {showTooltip && <span className='tooltipStyle'>Copiar</span>}
       </p>

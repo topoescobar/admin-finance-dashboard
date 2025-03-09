@@ -3,7 +3,9 @@ import { lusitana } from '@/app/ui/fonts'
 import Search from '@/app/ui/search'
 import './styles/customers.css'
 import { cachedLastPrices, fetchUsersInvestment } from '@/app/lib/data'
-import { DeleteCustomer, UpdateCustomer } from './buttons'
+import { DeleteCustomer, UpdateCustomer, ViewCustomer } from './buttons'
+import CustomersEmail from './customers-email'
+import { CopyText } from './client-componets'
 
 export default async function CustomersTable({ query }:
   { query: string }) {
@@ -39,19 +41,22 @@ export default async function CustomersTable({ query }:
                           <p>{user.email.split('@')[0]}</p>
                         </div>
                       </div>
-
                       <p className="text-sm text-gray-500 emailContainerStyle" >
                         {user.email}
                       </p>
-
+                    </div>
+                    <div className='flex gap-2'>
+                      <ViewCustomer name={user.email} />
+                      <UpdateCustomer id={user.id} />
                     </div>
                   </div>
-                  <div className="flex w-full items-center justify-between py-5">
+
+                  <div className="flex w-full items-center justify-between py-5 border-b">
                     <div className="flex w-1/2 flex-col">
                       <p className="text-lg font-medium">FCA: Ahorro</p>
                       <p className="text-sm font-normal">{(user.fca_tokens * FCAprice).toFixed(2)} USD</p>
                       <p className="text-sm font-normal">
-                       PNL: {(user.fca_tokens * FCAprice - user.fca_deposited_usd).toFixed(2)} USD
+                        PNL: {(user.fca_tokens * FCAprice - user.fca_deposited_usd).toFixed(2)} USD
                       </p>
                       <p className="text-xs font-light">{(user.fca_tokens * 1).toFixed(2)} tokens </p>
                     </div>
@@ -63,6 +68,9 @@ export default async function CustomersTable({ query }:
                       </p>
                       <p className="text-xs font-light">{(user.fcd_tokens * 1).toFixed(2)} tokens</p>
                     </div>
+                  </div>
+                  <div className="flex gap-2 mt-2">
+
                   </div>
                 </div>
               ))}
@@ -93,7 +101,7 @@ export default async function CustomersTable({ query }:
                           width={28}
                           height={28}
                         />
-                        <p className='emailContainerStyle'>{user.email}</p>
+                        <CopyText text={user.email} />
                       </div>
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 text-sm">
@@ -112,6 +120,7 @@ export default async function CustomersTable({ query }:
                     </td>
                     <td className="whitespace-nowrap px-3 py-3 text-sm">
                       <div className="flex justify-end gap-3">
+                        <ViewCustomer name={user.email} />
                         <UpdateCustomer id={user.id} />
                       </div>
                     </td>
