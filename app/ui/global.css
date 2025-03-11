@@ -34,6 +34,21 @@ input[type='number']::-webkit-outer-spin-button {
   overflow: hidden;
   white-space: nowrap;
   animation: ticker 30s linear infinite;
+  /* animation-iteration-count: 3; */
+  --animation-duration: 10s;
+}
+
+.slide:hover {
+  animation-play-state: paused;
+}
+.slide-1 {
+  animation-delay: 0s;
+}
+.slide-2 {
+  animation-delay: 15s;
+}
+.slide-3 {
+  animation-delay: 30s;
 }
 
 @keyframes ticker {
@@ -49,7 +64,7 @@ input[type='number']::-webkit-outer-spin-button {
   }
 
   100% {
-    transform: translateX(-500%);
+    transform: translateX(-400%);
     opacity: 1;
     color: aliceblue;
   }

@@ -1,12 +1,12 @@
 'use client'
+import { News } from '@/app/lib/definitions'
 import { SunIcon } from '@heroicons/react/20/solid'
 import { MoonIcon } from '@heroicons/react/24/outline'
 import { useEffect, useRef, useState } from 'react'
 
 
-export default function Navbar() {
+export default function Navbar({ lastNews }: { lastNews: News[] }) {
 
-   const news = 'Ultimas novedades'
    const [theme, setTheme] = useState('')
 
    useEffect(() => {
@@ -29,7 +29,11 @@ export default function Navbar() {
 
    return (
       <div className="flex items-center justify-between p-4 bg-gray-100 dark:bg-slate-800 sticky top-0 z-40 navbar">
-         <h1 className="text-lg font-semibold slide">{news}</h1>
+         {lastNews.map((news, index) => (
+            <h1 key={news.id} className={`text-lg font-medium slide slide-${index + 1}`}>
+               {news.title}: {news.content}
+            </h1>
+         ))}
          <div className="flex items-center space-x-2">
             <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

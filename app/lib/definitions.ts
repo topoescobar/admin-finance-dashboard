@@ -135,3 +135,8 @@ export type LinksToRender = {
   icon : any
 }
 
+export type News = {
+  id: string,
+  title: string,
+  content: string
+}

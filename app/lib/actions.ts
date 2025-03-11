@@ -172,7 +172,7 @@ export async function createTokenPrice(formData: FormData): Promise<void> {
     console.log(error)
     return Promise.resolve()
   }
-  revalidatePath('/dashboard/funds') //revalidar para que no use datos de cache
+  revalidatePath('/dashboard/funds')
 }
 
 export async function deletePriceWithId(id: string): Promise<void> {

@@ -11,7 +11,8 @@ import {
   Transaction,
   UserTransaction,
   Investment,
-  InvestmentTable
+  InvestmentTable,
+  News
 } from './definitions'
 import { formatCurrency } from './utils'
 import { unstable_noStore } from 'next/cache'
@@ -274,7 +275,7 @@ export async function fetchLastTokensPrices() {
 }
 //funcion para dejar cacheado el ultimo precio para todos los usuarios
 export const cachedLastPrices = cache(fetchLastTokensPrices, ['tokenprices'], {
-  revalidate: 43200, // 12 hours
+  revalidate: 3600, // 1 hour
   tags: ['tokenprices'],
 })
 
@@ -325,3 +326,21 @@ export async function fetchUserTxPages(query: string, userid: string) {
   }
 }
 
+export async function fetchLastNews() {
+  try {
+    const data = await sql<News>`
+      SELECT
+        news.id,
+        news.title,
+        news.content
+      FROM news
+      ORDER BY news.id DESC
+      LIMIT 3
+    `
+    return data.rows
+
+  } catch (error) {
+    console.error('Database Error:', error)
+    throw new Error('Failed to fetch last news.')
+  }
+}

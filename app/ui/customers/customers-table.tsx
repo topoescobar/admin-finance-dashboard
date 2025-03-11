@@ -16,6 +16,7 @@ export default async function CustomersTable({ query }:
   return (
 
     <div className="mt-6 flow-root">
+      <div className='mb-2'>FCA price: {FCAprice},  FCD price: {FCDprice}</div>
       <div className="sm:overflow-x-auto">
         <div className="inline-block min-w-full align-middle">
           <div className="overflow-hidden rounded-lg bg-gray-50 p-2 sm:p-2 dark:bg-gray-700">
