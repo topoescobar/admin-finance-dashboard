@@ -82,6 +82,7 @@ export type TransactionForm = {
   value: number
   tokens: number
   vault: string
+  tokenprice: number
   status: 'pending' | 'executed'
   date: Date
   userid: string

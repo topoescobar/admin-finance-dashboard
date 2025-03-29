@@ -17,7 +17,7 @@ export default function Search({ placeholder }: { placeholder: string }) {
       params.delete('search')
     }
     router.replace(`?${params.toString()}`)
-  }, 1000)
+  }, 800)
 
   return (
     <div className="relative flex flex-1 shrink">

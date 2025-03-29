@@ -124,6 +124,7 @@ export async function fetchTransactionById(id: string) {
         transactions.value,
         transactions.tokens,
         transactions.vault,
+        transactions.tokenprice,
         transactions.status,
         transactions.date,
         transactions.userid,
