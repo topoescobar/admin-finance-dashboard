@@ -7,16 +7,16 @@ import { getUser } from '@/app/lib/data'
 
 export default async function SideNav() {
   const authData = await auth()
-  const { id, email, image_url, role} = await getUser(authData?.user?.email ?? '')
+  const { id, email, image_url, role } = await getUser(authData?.user?.email ?? '')
 
   // Map of links to display in the side navigation.
   const adminLinks = [
     { name: 'Inicio', href: '/dashboard', icon: 'HomeIcon' },
-    { name: 'Transacciones', href: '/dashboard/transactions', icon: 'DocumentTextIcon' },
-    { name: 'Dashboard (Admin)', href: '/dashboard/admin-dashboard', icon: 'HomeIcon' },
-    { name: 'Transacciones (Admin)', href: '/dashboard/admin-transactions', icon: 'DocumentTextIcon', },
-    { name: 'Clientes (Admin)', href: '/dashboard/admin-customers', icon: 'UserGroupIcon' },
-    { name: 'Fondos (Admin)', href: '/dashboard/admin-funds', icon: 'BanknotesIcon' },
+    { name: 'Tx personal', href: '/dashboard/transactions', icon: 'DocumentTextIcon' },
+    { name: 'Dashboard', href: '/dashboard/admin-dashboard', icon: 'HomeIcon' },
+    { name: 'Transacciones gral', href: '/dashboard/admin-transactions', icon: 'DocumentTextIcon', },
+    { name: 'Clientes', href: '/dashboard/admin-customers', icon: 'UserGroupIcon' },
+    { name: 'Fondos', href: '/dashboard/admin-funds', icon: 'BanknotesIcon' },
   ]
 
   const userLinks = [
@@ -34,10 +34,10 @@ export default async function SideNav() {
         </div>
       </Link>
 
+      <div className='ml-2 md:block text-lg'>
+        <span>{role} {email.split('@')[0]} </span>
+      </div>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-        <div className='ml-2 hidden md:block'>
-          <span>{email.split('@')[0]} </span> 
-        </div>
         <NavLinks linksToRender={links} />
         <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block dark:bg-gray-800"></div>
         <form action={async () => {
@@ -46,7 +46,7 @@ export default async function SideNav() {
         }}>
           <button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 dark:bg-indigo-800 dark:text-white">
             <PowerIcon className="w-6" />
-            <div className="hidden md:block">Salir</div>
+            <div className="md:block">Salir</div>
           </button>
         </form>
       </div>
