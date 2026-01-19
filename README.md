@@ -2,8 +2,26 @@
 
 Aplicacion con **next.js 14**, usando server actions para las peticiones al backend
 
+### Instalacion
+
+```
+npm install
+```
+
+### Ejecucion
+
+```
+npm run dev
+```
+
+## Auth
+Se implemento **authjs** para la autenticacion, se configuro con **next-auth** y **postgresql**
+Configuraciones:
+Completar el archivo .env (ver .env.example)
+
 ## Crear tablas
 El archivo seed de la carpeta scripts permite crear tablas con datos genéricos, el comando esta configurado en package.json, ejecutable con 
+
 ```
 npm seed
 ```

@@ -22,7 +22,7 @@ export default function Page() {
             <Link href="/dashboard" className="flex items-center gap-5 self-start rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-500 md:text-base">
               <span>Dashboard</span> <ChartBarIcon className="w-5 md:w-6" />
             </Link>
-            <Link href="https://fractalcrypto.tech/" target="_blank" className="flex items-center gap-5 self-start rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-500 md:text-base">
+            <Link href="https://ipfs.io/ipfs/QmV1FQjmeWK6gm38SBimwJcUYbaMT1BtLhBPZKwgiyeyyy/" target="_blank" className="flex items-center gap-5 self-start rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-indigo-500 md:text-base">
               <span>Sitio web</span> <GlobeAltIcon className="w-5 md:w-6" />
             </Link>
           </div>
