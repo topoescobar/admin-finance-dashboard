@@ -23,58 +23,65 @@ export default async function CustomersTable({ query }:
 
             {/* MOBILE */}
             <div className="md:hidden">
-              {usersInvestments?.map((user) => (
-                <div
-                  key={user.id}
-                  className="mb-2 w-full rounded-md bg-white p-4 bg-gradient-to-br dark:from-indigo-950 dark:via-slate-900 dark:to-slate-800 dark:text-slate-100"
-                >
-                  <div className="flex items-center justify-between border-b pb-4">
-                    <div>
-                      <div className="mb-2 flex items-center">
-                        <div className="flex items-center gap-3">
-                          <Image
-                            src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
-                            className="rounded-full "
-                            alt={`${user.email}'s profile picture`}
-                            width={28}
-                            height={28}
-                          />
-                          <p>{user.email.split('@')[0]}</p>
+              {usersInvestments?.map((user) => {
+                const fcaValue = user.fca_tokens * FCAprice;
+                const fcdValue = user.fcd_tokens * FCDprice;
+                const fcaPnl = fcaValue - user.fca_deposited_usd;
+                const fcdPnl = fcdValue - user.fcd_deposited_usd;
+
+                return (
+                  <div
+                    key={user.id}
+                    className="mb-2 w-full rounded-md bg-white p-4 bg-gradient-to-br dark:from-indigo-950 dark:via-slate-900 dark:to-slate-800 dark:text-slate-100"
+                  >
+                    <div className="flex items-center justify-between border-b pb-4">
+                      <div>
+                        <div className="mb-2 flex items-center">
+                          <div className="flex items-center gap-3">
+                            <Image
+                              src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
+                              className="rounded-full "
+                              alt={`${user.email}'s profile picture`}
+                              width={28}
+                              height={28}
+                            />
+                            <p>{user.email.split('@')[0]}</p>
+                          </div>
                         </div>
+                        <p className="text-sm text-gray-500 emailContainerStyle" >
+                          {user.email}
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500 emailContainerStyle" >
-                        {user.email}
-                      </p>
+                      <div className='flex gap-2'>
+                        <ViewCustomer name={user.email} />
+                        <UpdateCustomer id={user.id} />
+                      </div>
                     </div>
-                    <div className='flex gap-2'>
-                      <ViewCustomer name={user.email} />
-                      <UpdateCustomer id={user.id} />
-                    </div>
-                  </div>
 
-                  <div className="flex w-full items-center justify-between py-5 border-b">
-                    <div className="flex w-1/2 flex-col">
-                      <p className="text-lg font-medium">FCA: Ahorro</p>
-                      <p className="text-sm font-normal">{(user.fca_tokens * FCAprice).toFixed(2)} USD</p>
-                      <p className="text-sm font-normal">
-                        PNL: {(user.fca_tokens * FCAprice - user.fca_deposited_usd).toFixed(2)} USD
-                      </p>
-                      <p className="text-xs font-light">{(user.fca_tokens * 1).toFixed(2)} tokens </p>
+                    <div className="flex w-full items-center justify-between py-5 border-b">
+                      <div className="flex w-1/2 flex-col">
+                        <p className="text-lg font-medium">FCA: Ahorro</p>
+                        <p className="text-sm font-normal">{fcaValue.toFixed(2)} USD</p>
+                        <p className="text-sm font-normal">
+                          PNL: {fcaPnl.toFixed(2)} USD
+                        </p>
+                        <p className="text-xs font-light">{(user.fca_tokens * 1).toFixed(2)} tokens </p>
+                      </div>
+                      <div className="flex w-1/2 flex-col">
+                        <p className="text-lg font-medium">FCD: Dinámico</p>
+                        <p className="text-sm font-normal">{fcdValue.toFixed(2)} USD</p>
+                        <p className="text-sm font-normal">
+                          PNL: {fcdPnl.toFixed(2)} USD
+                        </p>
+                        <p className="text-xs font-light">{(user.fcd_tokens * 1).toFixed(2)} tokens</p>
+                      </div>
                     </div>
-                    <div className="flex w-1/2 flex-col">
-                      <p className="text-lg font-medium">FCD: Dinámico</p>
-                      <p className="text-sm font-normal">{(user.fcd_tokens * FCDprice).toFixed(2)} USD</p>
-                      <p className="text-sm font-normal">
-                        PNL: {(user.fcd_tokens * FCDprice - user.fcd_deposited_usd).toFixed(2)} USD
-                      </p>
-                      <p className="text-xs font-light">{(user.fcd_tokens * 1).toFixed(2)} tokens</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 mt-2">
+                    <div className="flex gap-2 mt-2">
 
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* DESKTOP */}
@@ -86,53 +93,65 @@ export default async function CustomersTable({ query }:
                   <th scope="col" className="px-3 py-5 font-medium"> FCA pnl </th>
                   <th scope="col" className="px-4 py-5 font-medium"> FCD val actual</th>
                   <th scope="col" className="px-4 py-5 font-medium"> FCD pnl </th>
+                  <th scope="col" className="px-4 py-5 font-medium"> Nivel riesgo </th>
                   <th scope="col" className="px-4 py-5 font-medium"> Acciones </th>
                 </tr>
               </thead>
 
               <tbody className="bg-white bg-gradient-to-br dark:from-slate-900 dark:to-slate-800">
-                {usersInvestments?.map((user) => (
-                  <tr key={user.id} className="group w-full border-b py-2 text-sm">
-                    <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
-                      <div className="flex items-center gap-3">
-                        <Image
-                          src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
-                          className="rounded-full"
-                          alt={`${user.email.split('@')[0]}'s profile picture`}
-                          width={28}
-                          height={28}
-                        />
-                        <CopyText text={user.email} />
-                      </div>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm">
-                      <div>{user.fca_tokens} tokens </div>
-                      <div>{(user.fca_tokens * FCAprice).toFixed(2)} USD</div>
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm">
-                      {(user.fca_tokens * FCAprice - user.fca_deposited_usd).toFixed(2)} USD
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm">
-                      <div>{user.fcd_tokens} tokens </div>
-                      <div>{(user.fcd_tokens * FCDprice).toFixed(2)} USD</div>
-                    </td>
-                    <td className='whitespace-nowrap px-3 py-3 text-sm'>
-                      {(user.fcd_tokens * FCDprice - user.fcd_deposited_usd).toFixed(2)} USD
-                    </td>
-                    <td className="whitespace-nowrap px-3 py-3 text-sm">
-                      <div className="flex justify-end gap-3">
-                        <ViewCustomer name={user.email} />
-                        <UpdateCustomer id={user.id} />
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {usersInvestments?.map((user) => {
+                  const fcaValue = user.fca_tokens * FCAprice;
+                  const fcdValue = user.fcd_tokens * FCDprice;
+                  const totalValue = fcaValue + fcdValue;
+                  const fcaPnl = fcaValue - user.fca_deposited_usd;
+                  const fcdPnl = fcdValue - user.fcd_deposited_usd;
+
+                  return (
+                    <tr key={user.id} className="group w-full border-b py-2 text-sm">
+                      <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-6">
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={user.image_url === null || user.image_url.trim() === '' ? '/customers/noavatar.png' : user.image_url}
+                            className="rounded-full"
+                            alt={`${user.email.split('@')[0]}'s profile picture`}
+                            width={28}
+                            height={28}
+                          />
+                          <CopyText text={user.email} />
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 text-sm">
+                        <div>{user.fca_tokens} tokens </div>
+                        <div>{fcaValue.toFixed(2)} USD</div>
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 text-sm">
+                        {fcaPnl.toFixed(2)} USD
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 text-sm">
+                        <div>{user.fcd_tokens} tokens </div>
+                        <div>{fcdValue.toFixed(2)} USD</div>
+                      </td>
+                      <td className='whitespace-nowrap px-3 py-3 text-sm'>
+                        {fcdPnl.toFixed(2)} USD
+                      </td>
+                      <td className='whitespace-nowrap px-3 py-3 text-sm'>
+                        {(fcdValue / totalValue * 100).toFixed(2)} %
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-3 text-sm">
+                        <div className="flex justify-end gap-3">
+                          <ViewCustomer name={user.email} />
+                          <UpdateCustomer id={user.id} />
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    </div>
+    </div >
 
   )
 }

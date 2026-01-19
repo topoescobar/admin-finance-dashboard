@@ -196,7 +196,10 @@ export async function fetchUsersInvestment(query: string) {
       WHERE
         u.email ILIKE ${`%${query}%`} OR
         u.id::text ILIKE ${`%${query}%`}
-      GROUP BY u.id, u.email, u.image_url;
+      GROUP BY u.id, u.email, u.image_url
+      HAVING 
+        COALESCE(SUM(t.tokens) FILTER (WHERE t.vault = 'FCA'), 0) >= 0.1 OR
+        COALESCE(SUM(t.tokens) FILTER (WHERE t.vault = 'FCD'), 0) >= 0.1;
     `
     return investmentData.rows
 
